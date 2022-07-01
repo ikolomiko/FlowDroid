@@ -2,6 +2,7 @@ soot-infoflow-summaries/build/
 soot-infoflow-summaries/target/
 /.metadata
 /.recommenders
+.vscode/
 .idea/
 *.iml
 target/
