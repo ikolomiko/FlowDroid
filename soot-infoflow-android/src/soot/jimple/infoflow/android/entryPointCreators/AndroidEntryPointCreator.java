@@ -145,7 +145,7 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 
 		// If we have an implementation of android.app.Application, this needs
 		// special treatment
-		initializeApplicationClass();
+		//initializeApplicationClass();
 
 		// If we have an application, we need to start it in the very beginning
 		if (applicationClass != null) {

@@ -83,6 +83,7 @@ import soot.jimple.infoflow.taintWrappers.ITaintWrapperDataFlowAnalysis;
 import soot.jimple.infoflow.util.SystemClassHandler;
 import soot.jimple.infoflow.values.IValueProvider;
 import soot.options.Options;
+import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
@@ -403,15 +404,45 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 					String.format("Target APK file %s does not exist", targetAPK.getCanonicalPath()));
 
 		// Parse the resource file
+		
+		/*
 		long beforeARSC = System.nanoTime();
 		this.resources = new ARSCFileParser();
 		this.resources.parse(targetAPK.getAbsolutePath());
 		logger.info("ARSC file parsing took " + (System.nanoTime() - beforeARSC) / 1E9 + " seconds");
-
 		// To look for callbacks, we need to start somewhere. We use the Android
 		// lifecycle methods for this purpose.
 		this.manifest = createManifestParser(targetAPK);
+		*/
 		SystemClassHandler.v().setExcludeSystemComponents(config.getIgnoreFlowsInSystemPackages());
+		
+		
+		//this.entrypoints.add(Scene.v().getSootClassUnsafe("butterknife.Views"));
+		
+		this.entrypoints = new HashSet<>();
+
+		//Scene.v().forceResolve("butterknife.Views", SootClass.SIGNATURES);
+/*
+		SootClass a = Scene.v().getMainClass();
+		String s = Scene.v().defaultClassPath();
+		Chain<SootClass> ss = Scene.v().getApplicationClasses();
+		List<SootMethod> en = Scene.v().getEntryPoints();
+		String cp = Scene.v().getSootClassPath();
+		Chain<SootClass> lc = Scene.v().getLibraryClasses();
+		List<String> pl = Scene.v().getPkgList();
+		String scp = Scene.v().getSootClassPath();
+		int state = Scene.v().getState();*/
+		
+		for (SootClass sc : Scene.v().getClasses(SootClass.SIGNATURES)) {
+			if (sc != null) {
+				if (!isFromFirstPartyLibrary(sc)) {
+					entrypoints.add(sc);
+					System.out.println(sc.getName());
+				}
+			}
+		}
+		
+		/*
 		Set<String> entryPoints = manifest.getEntryPointClasses();
 		this.entrypoints = new HashSet<>(entryPoints.size());
 		for (String className : entryPoints) {
@@ -419,6 +450,17 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			if (sc != null)
 				this.entrypoints.add(sc);
 		}
+		*/
+	}
+
+	private boolean isFromFirstPartyLibrary(SootClass sc) {
+		if (sc.isJavaLibraryClass()) return true;
+		String name = sc.getName();
+		if (name.startsWith("java.") || name.startsWith("javax") || 
+			name.startsWith("android.") || name.startsWith("androidx."))
+			return true;
+
+		return false;
 	}
 
 	/**
@@ -493,13 +535,13 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			if (callbackClasses != null && callbackClasses.isEmpty()) {
 				logger.warn("Callback definition file is empty, disabling callbacks");
 			} else {
-				lfp = createLayoutFileParser();
+				//lfp = createLayoutFileParser();
 				switch (callbackConfig.getCallbackAnalyzer()) {
 				case Fast:
-					calculateCallbackMethodsFast(lfp, entryPoint);
+					calculateCallbackMethodsFast(/*lfp,*/ entryPoint);
 					break;
 				case Default:
-					calculateCallbackMethods(lfp, entryPoint);
+					calculateCallbackMethods(/*lfp,*/ entryPoint);
 					break;
 				default:
 					throw new RuntimeException("Unknown callback analyzer");
@@ -634,7 +676,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 	 *                  Pass null to compute callbacks for all components.
 	 * @throws IOException Thrown if a required configuration cannot be read
 	 */
-	private void calculateCallbackMethods(LayoutFileParser lfp, SootClass component) throws IOException {
+	private void calculateCallbackMethods(/*LayoutFileParser lfp,*/ SootClass component) throws IOException {
 		final CallbackConfiguration callbackConfig = config.getCallbackConfig();
 
 		// Load the APK file
@@ -664,7 +706,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 
 		// Find the user-defined sources in the layout XML files. This
 		// only needs to be done once, but is a Soot phase.
-		lfp.parseLayoutFile(config.getAnalysisFileConfig().getTargetAPKFile());
+		//lfp.parseLayoutFile(config.getAnalysisFileConfig().getTargetAPKFile());
 
 		// Watch the callback collection algorithm's memory consumption
 		FlowDroidMemoryWatcher memoryWatcher = null;
@@ -720,7 +762,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 					throw new RuntimeException("No callgraph in Scene even after creating one. That's very sad "
 							+ "and should never happen.");
 
-				lfp.parseLayoutFileDirect(config.getAnalysisFileConfig().getTargetAPKFile());
+				//lfp.parseLayoutFileDirect(config.getAnalysisFileConfig().getTargetAPKFile());
 				PackManager.v().getPack("wjtp").apply();
 
 				// Creating all callgraph takes time and memory. Check whether
@@ -743,8 +785,8 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 					hasChanged = true;
 
 				// Collect the XML-based callback methods
-				if (collectXmlBasedCallbackMethods(lfp, jimpleClass))
-					hasChanged = true;
+				//if (collectXmlBasedCallbackMethods(lfp, jimpleClass))
+				//	hasChanged = true;
 
 				// Avoid callback overruns. If we are beyond the callback limit
 				// for one entry point, we may not collect any further callbacks
@@ -997,7 +1039,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 	 *                   null to calculate callbacks for all entry points.
 	 * @throws IOException Thrown if a required configuration cannot be read
 	 */
-	private void calculateCallbackMethodsFast(LayoutFileParser lfp, SootClass component) throws IOException {
+	private void calculateCallbackMethodsFast(/*LayoutFileParser lfp,*/ SootClass component) throws IOException {
 		// Construct the current callgraph
 		releaseCallgraph();
 		createMainMethod(component);
@@ -1021,10 +1063,10 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 
 		// Find the user-defined sources in the layout XML files. This
 		// only needs to be done once, but is a Soot phase.
-		lfp.parseLayoutFileDirect(config.getAnalysisFileConfig().getTargetAPKFile());
+		//lfp.parseLayoutFileDirect(config.getAnalysisFileConfig().getTargetAPKFile());
 
 		// Collect the XML-based callback methods
-		collectXmlBasedCallbackMethods(lfp, jimpleClass);
+		//collectXmlBasedCallbackMethods(lfp, jimpleClass);
 
 		// Construct the final callgraph
 		releaseCallgraph();
@@ -1160,12 +1202,13 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			Options.v().set_force_android_jar(androidJar);
 		else
 			Options.v().set_android_jars(androidJar);
-		Options.v().set_src_prec(Options.src_prec_apk_class_jimple);
+		Options.v().set_src_prec(Options.src_prec_only_class);
 		Options.v().set_keep_offset(false);
 		Options.v().set_keep_line_number(config.getEnableLineNumbers());
 		Options.v().set_throw_analysis(Options.throw_analysis_dalvik);
 		Options.v().set_process_multiple_dex(config.getMergeDexFiles());
 		Options.v().set_ignore_resolution_errors(true);
+		Options.v().set_output_dir("/tmp/soot");
 
 		// Set soot phase option if original names should be used
 		if (config.getEnableOriginalNames())

@@ -297,7 +297,7 @@ public class MainClass {
 
 					@Override
 					public boolean accept(File dir, String name) {
-						return name.toLowerCase().endsWith(".apk");
+						return name.toLowerCase().endsWith(".java") || name.toLowerCase().endsWith(".class") || name.toLowerCase().endsWith(".jar");
 					}
 
 				}));
@@ -324,27 +324,27 @@ public class MainClass {
 			ITaintPropagationWrapper taintWrapper = initializeTaintWrapper(cmd);
 
 			int curAppIdx = 1;
-			for (File apkFile : apksToAnalyze) {
-				if (filesToSkip.contains(apkFile.getName())) {
+			//for (File apkFile : apksToAnalyze) {
+				/*if (filesToSkip.contains(apkFile.getName())) {
 					logger.info(String.format("Skipping app %s (%d of %d)...", apkFile.getCanonicalPath(), curAppIdx++,
 							apksToAnalyze.size()));
 					continue;
 				}
 				logger.info(String.format("Analyzing app %s (%d of %d)...", apkFile.getCanonicalPath(), curAppIdx++,
 						apksToAnalyze.size()));
-
-				// Configure the analyzer for the current APK file
-				config.getAnalysisFileConfig().setTargetAPKFile(apkFile.getCanonicalPath());
+						// Configure the analyzer for the current APK file
+						config.getAnalysisFileConfig().setTargetAPKFile(apkFile.getCanonicalPath());
+						*/
 				if (outputFile != null) {
 					if (apksToAnalyze.size() > 1 || (outputFile.exists() && outputFile.isDirectory())) {
-						String outputFileName = apkFile.getName().replace(".apk", ".xml");
-						File curOutputFile = new File(outputFile, outputFileName);
-						config.getAnalysisFileConfig().setOutputFile(curOutputFile.getCanonicalPath());
+						//String outputFileName = apkFile.getName().replace(".apk", ".xml");
+						//File curOutputFile = new File(outputFile, outputFileName);
+						//config.getAnalysisFileConfig().setOutputFile(curOutputFile.getCanonicalPath());
 
 						// If we have already analyzed this APK and we have the results, there is no
 						// need to do it again
-						if (curOutputFile.exists())
-							continue;
+						//if (curOutputFile.exists())
+							//continue;
 					}
 				}
 
@@ -363,7 +363,7 @@ public class MainClass {
 					String file = cmd.getOptionValue(OPTION_MISSING_SUMMARIES_FILE);
 					reportMissingSummaryWrapper.writeResults(new File(file));
 				}
-			}
+			//}
 		} catch (AbortAnalysisException e) {
 			// Silently return
 		} catch (ParseException e) {
