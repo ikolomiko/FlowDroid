@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
+set -e
 
 SECONDS=0
-JAVA_BIN="/usr/bin/java"
+JAVA_BIN="/usr/bin/java" # Java version >= 1.8
 JAVAC_BIN="/usr/bin/javac"
 KOTLINC_BIN="/usr/bin/kotlinc"
 ANDROID_JAR="$HOME/Android/platforms/android-29/android.jar"
 
 FLOWDROID_ROOT="$(dirname $(realpath "$0"))"
 FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd/target/soot-infoflow-cmd-jar-with-dependencies.jar"
-CLASSPATH_DEPS="$FLOWDROID_ROOT/classpath-deps/"
 SOURCES_SINKS="$FLOWDROID_ROOT/SourcesAndSinks.txt"
 FLOWDROID_OPT=" -ls -r -os -mc 99999 -md 99999 -mt 8 -ps"
 
-INPUT_FILE="$1"
+IVY_BIN="$FLOWDROID_ROOT/ivy-2.5.0.jar"
+IVY_SETTINGS="$FLOWDROID_ROOT/ivysettings.xml"
+
+INPUT_FILE="$1" # GROUPID+ARTIFACTID+VERSION.aar || GROUPID+ARTIFACTID+VERSION.jar
 OUTPUT_XML="$2"
 
 usage() {
@@ -21,7 +24,8 @@ usage() {
 }
 
 error() {
-  echo "An error occurred: $1"
+  echo "An error occurred: 
+$1"
   exit 1
 }
 
@@ -46,30 +50,54 @@ fi
 
 
 # Check input file extension
-EXT=`echo ${INPUT_FILE##*.} | tr '[:upper:]' '[:lower:]'`
+EXT=$(echo ${INPUT_FILE##*.} | tr '[:upper:]' '[:lower:]')
 if [[ ! $EXT =~ ^(aar|jar)$ ]]; then
   error "Incorrect file extension: Expected aar or jar but got $EXT"
 fi
 
 
+# Check input file name
+BASE_NAME=$(basename $INPUT_FILE)
+IFS=+ read -r GROUPID ARTIFACTID VERSION <<< $BASE_NAME
+VERSION=${VERSION%.*}
+if [[ -z $GROUPID || -z $ARTIFACTID || -z $VERSION ]]; then
+  error "Incorrect file name format: Expected <group id>+<artifact id>+<version>.<aar|jar> but got $BASE_NAME
+
+Example input file name format: com.android.google.material+material+1.6.1.aar"
+fi
+
 # Extract aar/jar file
-TEMP=`mktemp -d`
+TEMP=$(mktemp -d)
 if [ $EXT = "aar" ]; then
+  rm -f /tmp/classes.jar
   unzip $INPUT_FILE classes.jar -d /tmp
   unzip /tmp/classes.jar -d $TEMP
-  rm /tmp/classes.jar
+  rm -f /tmp/classes.jar
 else
   unzip $INPUT_FILE -d $TEMP
 fi
 
 
-# Add some 1st party dependencies (androidx, android.support, kotlin stdlib...)
-#to the classpath
-DEPENDENCIES=`ls $CLASSPATH_DEPS`
+# Get all dependencies (except android.jar)
+DEPS_DIR=$(mktemp -d)
+$JAVA_BIN -jar $IVY_BIN -dependency $GROUPID $ARTIFACTID $VERSION -retrieve "$DEPS_DIR/[organization]+[artifact]+[revision](+[classifier]).[ext]" -settings $IVY_SETTINGS
+rm -f $DEPS_DIR/$BASE_NAME
+
+
+# Unpack aar dependencies (if there are any)
+AAR_DEPS=$(find $DEPS_DIR -name "*.aar")
+while IFS= read -r line; do
+  [ -z $line ] && break
+  unzip $line classes.jar -d "$DEPS_DIR/$(uuidgen).jar"
+  rm -f $line
+done <<< "$AAR_DEPS"
+
+
+# Add dependencies to the classpath
 CLASSPATH="$ANDROID_JAR:$TEMP"
-for lib in $DEPENDENCIES
+for lib in $DEPS_DIR/*
 do
-  CLASSPATH="$CLASSPATH:$CLASSPATH_DEPS$lib"
+  CLASSPATH="$CLASSPATH:$lib"
 done
 
 
@@ -90,5 +118,6 @@ run_flowdroid $TEMP
 
 # Clean up the temporary directory and exit
 rm -r $TEMP
+rm -r $DEPS_DIR
 echo "Took $SECONDS seconds"
 exit 0
