@@ -28,6 +28,7 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 		private String androidPlatformDir = "";
 		private String additionalClasspath = "";
 		private String outputFile = "";
+		private String groupId = "";
 
 		/**
 		 * Copies the settings of the given configuration into this configuration object
@@ -40,6 +41,7 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 			this.androidPlatformDir = fileConfig.androidPlatformDir;
 			this.additionalClasspath = fileConfig.additionalClasspath;
 			this.outputFile = fileConfig.outputFile;
+			this.groupId = fileConfig.groupId;
 		}
 
 		/**
@@ -50,7 +52,8 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 		 */
 		public boolean validate() {
 			return targetAPKFile != null && !targetAPKFile.isEmpty() && sourceSinkFile != null
-					&& !sourceSinkFile.isEmpty() && androidPlatformDir != null && !androidPlatformDir.isEmpty();
+					&& !sourceSinkFile.isEmpty() && androidPlatformDir != null && !androidPlatformDir.isEmpty()
+					&& groupId != null && !groupId.isEmpty();
 		}
 
 		/**
@@ -154,6 +157,24 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 			this.outputFile = outputFile;
 		}
 
+		/**
+		 * Gets the group id of the loaded library
+		 * 
+		 * @return The group id of the package
+		 */
+		public String getGroupId() {
+			return groupId;
+		}
+
+		/**
+		 * Sets the group id of the loaded library
+		 * 
+		 * @param groupId The group id of the loaded package
+		 */
+		public void setGroupId(String groupId) {
+			this.groupId = groupId;
+		}
+
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -163,6 +184,7 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 			result = prime * result + ((outputFile == null) ? 0 : outputFile.hashCode());
 			result = prime * result + ((sourceSinkFile == null) ? 0 : sourceSinkFile.hashCode());
 			result = prime * result + ((targetAPKFile == null) ? 0 : targetAPKFile.hashCode());
+			result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
 			return result;
 		}
 
@@ -199,6 +221,11 @@ public class InfoflowAndroidConfiguration extends InfoflowConfiguration {
 				if (other.targetAPKFile != null)
 					return false;
 			} else if (!targetAPKFile.equals(other.targetAPKFile))
+				return false;
+			if (groupId == null) {
+				if (other.groupId != null)
+					return false;
+			} else if (!groupId.equals(other.groupId))
 				return false;
 			return true;
 		}

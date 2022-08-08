@@ -287,8 +287,8 @@ public abstract class AbstractCallbackAnalyzer {
 	 */
 	protected void analyzeMethodForCallbackRegistrations(SootClass lifecycleElement, SootMethod method) {
 		// Do not analyze system classes
-		if (SystemClassHandler.v().isClassInSystemPackage(method.getDeclaringClass().getName()))
-			return;
+		//if (SystemClassHandler.v().isClassInSystemPackage(method.getDeclaringClass().getName()))
+		//	return;
 		if (!method.isConcrete())
 			return;
 
@@ -819,7 +819,7 @@ public abstract class AbstractCallbackAnalyzer {
 		for (SootClass parentClass : Scene.v().getActiveHierarchy().getSuperclassesOf(sootClass)) {
 			if (SystemClassHandler.v().isClassInSystemPackage(parentClass.getName()))
 				for (SootMethod sm : parentClass.getMethods())
-					if (!sm.isConstructor())
+					//if (!sm.isConstructor())
 						systemMethods.put(sm.getSubSignature(), sm);
 		}
 
@@ -893,14 +893,14 @@ public abstract class AbstractCallbackAnalyzer {
 	 * @param lifecycleElement the component to which the callback method belongs
 	 */
 	private void checkAndAddCallback(SootClass sc, SootClass baseClass, SootClass lifecycleElement) {
-		if (androidCallbacks.contains(sc.getName())) {
-			CallbackType callbackType = isUICallback(sc) ? CallbackType.Widget : CallbackType.Default;
-			for (SootMethod sm : sc.getMethods()) {
-				SootMethod callbackImplementation = getMethodFromHierarchyEx(baseClass, sm.getSubSignature());
-				if (callbackImplementation != null)
-					checkAndAddMethod(callbackImplementation, sm, lifecycleElement, callbackType);
-			}
+		//if (androidCallbacks.contains(sc.getName())) {
+		CallbackType callbackType = isUICallback(sc) ? CallbackType.Widget : CallbackType.Default;
+		for (SootMethod sm : sc.getMethods()) {
+			SootMethod callbackImplementation = getMethodFromHierarchyEx(baseClass, sm.getSubSignature());
+			if (callbackImplementation != null)
+				checkAndAddMethod(callbackImplementation, sm, lifecycleElement, callbackType);
 		}
+		//}
 	}
 
 	/**
@@ -940,8 +940,8 @@ public abstract class AbstractCallbackAnalyzer {
 			return false;
 
 		// Skip constructors
-		if (method.isConstructor() || method.isStaticInitializer())
-			return false;
+		//if (method.isConstructor() || method.isStaticInitializer())
+		//	return false;
 
 		// Check the filters
 		if (!filterAccepts(lifecycleClass, method.getDeclaringClass()))

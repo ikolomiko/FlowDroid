@@ -54,25 +54,30 @@ public class ComponentReachableMethods {
 	 *                          methods
 	 */
 	public ComponentReachableMethods(InfoflowAndroidConfiguration config, SootClass originalComponent,
-			Collection<MethodOrMethodContext> entryPoints) {
+			Collection<SootMethod> entryPoints) {
 		this.config = config;
 		this.originalComponent = originalComponent;
 		this.unprocessedMethods = reachables.reader();
 		addMethods(entryPoints.iterator());
 	}
 
-	private void addMethods(Iterator<MethodOrMethodContext> methods) {
+	private void addMethods2(Iterator<MethodOrMethodContext> methods) {
+		while (methods.hasNext())
+			addMethod(methods.next());
+	}
+
+	private void addMethods(Iterator<SootMethod> methods) {
 		while (methods.hasNext())
 			addMethod(methods.next());
 	}
 
 	private void addMethod(MethodOrMethodContext m) {
 		// Filter out methods in system classes
-		if (!SystemClassHandler.v().isClassInSystemPackage(m.method().getDeclaringClass().getName())) {
-			if (set.add(m)) {
-				reachables.add(m);
-			}
+		//if (!SystemClassHandler.v().isClassInSystemPackage(m.method().getDeclaringClass().getName())) {
+		if (set.add(m)) {
+			reachables.add(m);
 		}
+		//}
 	}
 
 	public void update() {
@@ -128,7 +133,7 @@ public class ComponentReachableMethods {
 
 			});
 			Iterator<Edge> targets = filter.wrap(Scene.v().getCallGraph().edgesOutOf(m));
-			addMethods(new Targets(targets));
+			addMethods2(new Targets(targets));
 		}
 	}
 

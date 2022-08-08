@@ -420,22 +420,10 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 		//this.entrypoints.add(Scene.v().getSootClassUnsafe("butterknife.Views"));
 		
 		this.entrypoints = new HashSet<>();
-
-		//Scene.v().forceResolve("butterknife.Views", SootClass.SIGNATURES);
-/*
-		SootClass a = Scene.v().getMainClass();
-		String s = Scene.v().defaultClassPath();
-		Chain<SootClass> ss = Scene.v().getApplicationClasses();
-		List<SootMethod> en = Scene.v().getEntryPoints();
-		String cp = Scene.v().getSootClassPath();
-		Chain<SootClass> lc = Scene.v().getLibraryClasses();
-		List<String> pl = Scene.v().getPkgList();
-		String scp = Scene.v().getSootClassPath();
-		int state = Scene.v().getState();*/
 		
-		for (SootClass sc : Scene.v().getClasses(SootClass.SIGNATURES)) {
+		for (SootClass sc : Scene.v().getClasses(SootClass.BODIES)) {
 			if (sc != null) {
-				if (!isFromFirstPartyLibrary(sc)) {
+				if (!isFirstParty(sc)) {
 					entrypoints.add(sc);
 					System.out.println(sc.getName());
 				}
@@ -453,12 +441,15 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 		*/
 	}
 
-	private boolean isFromFirstPartyLibrary(SootClass sc) {
-		if (sc.isJavaLibraryClass()) return true;
+	private boolean isFirstParty(SootClass sc) {
+		List<String> firstParty = Arrays.asList("java.", "javax.", "kotlin.", "kotlinx.", "android.", "androidx.", "org.xmlpull.v1.", "il.ac.tau.MyApplicationHolder");
 		String name = sc.getName();
-		if (name.startsWith("java.") || name.startsWith("javax") || 
-			name.startsWith("android.") || name.startsWith("androidx."))
-			return true;
+		if (sc.isJavaLibraryClass()) return true;
+		for (String s : firstParty){
+			if (name.startsWith(s)) {
+				return true;
+			}
+		}
 
 		return false;
 	}
@@ -601,8 +592,8 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 				this.sourceSinkProvider.getSources(), this.sourceSinkProvider.getSinks(), callbacks, config,
 				lfp == null ? null : lfp.getUserControlsByID());
 
-		sourceSinkManager.setAppPackageName(this.manifest.getPackageName());
-		sourceSinkManager.setResourcePackages(this.resources.getPackages());
+		//sourceSinkManager.setAppPackageName(this.manifest.getPackageName());
+		//sourceSinkManager.setResourcePackages(this.resources.getPackages());
 		return sourceSinkManager;
 	}
 
@@ -1173,7 +1164,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 		String classpath = forceAndroidJar ? androidJar : Scene.v().getAndroidJarPath(androidJar, apkFileLocation);
 		if (additionalClasspath != null && !additionalClasspath.isEmpty())
 			classpath += File.pathSeparator + additionalClasspath;
-		logger.debug("soot classpath: " + classpath);
+		System.out.println("soot classpath: " + classpath);
 		return classpath;
 	}
 
@@ -1327,7 +1318,8 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 
 		@Override
 		protected boolean isUserCodeClass(String className) {
-			String packageName = manifest.getPackageName() + ".";
+			String packageName = SetupApplication.this.config.getAnalysisFileConfig().getGroupId() + ".";
+			//String packageName = manifest.getPackageName() + ".";
 			return super.isUserCodeClass(className) || className.startsWith(packageName);
 		}
 

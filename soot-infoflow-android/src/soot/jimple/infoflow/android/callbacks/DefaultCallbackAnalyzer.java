@@ -102,8 +102,18 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 						if (isKilled != null)
 							break;
 
-						List<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>(
-								entryPointUtils.getLifecycleMethods(sc));
+						//List<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>(
+						//		entryPointUtils.getLifecycleMethods(sc));
+
+						sc = Scene.v().forceResolve(sc.getName(), SootClass.BODIES);
+						
+
+						List<SootMethod> methods = sc.getMethods();
+						System.out.println(sc.getName() + "\n");
+						methods.forEach(method -> {
+							System.out.println(method.getName());
+						});
+						System.out.println("----------------------------------");
 
 						// Check for callbacks registered in the code
 						analyzeReachableMethods(sc, methods);
@@ -166,7 +176,7 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 						}
 
 						// Collect all methods that we need to analyze
-						List<MethodOrMethodContext> entryClasses = new ArrayList<>(callbacks.size());
+						List<SootMethod> entryClasses = new ArrayList<>(callbacks.size());
 						for (SootMethod sm : callbacks) {
 							if (sm != null)
 								entryClasses.add(sm);
@@ -187,7 +197,7 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 		PackManager.v().getPack("wjtp").add(transform);
 	}
 
-	private void analyzeReachableMethods(SootClass lifecycleElement, List<MethodOrMethodContext> methods) {
+	private void analyzeReachableMethods(SootClass lifecycleElement, List<SootMethod> methods) {
 		// Make sure to exclude all other edges in the callgraph except for the
 		// edges start in the lifecycle methods we explicitly pass in
 		ComponentReachableMethods rm = new ComponentReachableMethods(config, lifecycleElement, methods);

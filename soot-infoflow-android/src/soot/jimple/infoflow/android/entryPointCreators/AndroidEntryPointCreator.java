@@ -271,7 +271,16 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 				componentCreator = new ContentProviderEntryPointCreator(currentClass, applicationClass, this.manifest);
 				break;
 			default:
-				componentCreator = null;
+				Map<SootClass, SootMethod> curActivityToFragmentMethod2 = new HashMap<>();
+				if (fragmentClasses != null) {
+					Set<SootClass> fragments = fragmentClasses.get(currentClass);
+					if (fragments != null && !fragments.isEmpty()) {
+						for (SootClass fragment : fragments)
+							curActivityToFragmentMethod2.put(fragment, fragmentToMainMethod.get(fragment));
+					}
+				}
+				componentCreator = new ActivityEntryPointCreator(currentClass, applicationClass,
+						activityLifecycleCallbacks, callbackClassToField, curActivityToFragmentMethod2, this.manifest);
 				break;
 			}
 

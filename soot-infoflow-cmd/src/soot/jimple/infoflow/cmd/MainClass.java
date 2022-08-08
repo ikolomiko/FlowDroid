@@ -74,6 +74,7 @@ public class MainClass {
 	private static final String OPTION_ADDITIONAL_CLASSPATH = "ac";
 	private static final String OPTION_SKIP_APK_FILE = "si";
 	private static final String OPTION_WRITE_JIMPLE_FILES = "wj";
+	private static final String OPTION_GROUP_ID = "gi";
 
 	// Timeouts
 	private static final String OPTION_TIMEOUT = "dt";
@@ -155,6 +156,7 @@ public class MainClass {
 		options.addOption(OPTION_SKIP_APK_FILE, "skipapkfile", true,
 				"APK file to skip when processing a directory of input files");
 		options.addOption(OPTION_WRITE_JIMPLE_FILES, "writejimplefiles", true, "Write out the Jimple files");
+		options.addOption(OPTION_GROUP_ID, "groupid", true, "Group id of the library to be processed");
 
 		// Timeouts
 		options.addOption(OPTION_TIMEOUT, "timeout", true, "Timeout for the main data flow analysis");
@@ -761,6 +763,11 @@ public class MainClass {
 			String additionalClasspath = cmd.getOptionValue(OPTION_ADDITIONAL_CLASSPATH);
 			if (additionalClasspath != null && !additionalClasspath.isEmpty())
 				config.getAnalysisFileConfig().setAdditionalClasspath(additionalClasspath);
+		}
+		{
+			String groupId = cmd.getOptionValue(OPTION_GROUP_ID);
+			if (groupId != null && !groupId.isEmpty())
+				config.getAnalysisFileConfig().setGroupId(groupId);
 		}
 		if (cmd.hasOption(OPTION_WRITE_JIMPLE_FILES))
 			config.setWriteOutputFiles(true);

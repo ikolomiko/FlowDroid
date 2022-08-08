@@ -29,8 +29,11 @@ $1"
   exit 1
 }
 
-run_flowdroid() { # $1 = path to the unzipped jar file
-  $JAVA_BIN -jar $FLOWDROID_BIN -a $1 -s $SOURCES_SINKS -o $OUTPUT_XML -p $ANDROID_JAR $FLOWDROID_OPT
+run_flowdroid() { 
+  # $1 = path to the unzipped jar file
+  # $2 = group id
+  # $3 = classpath
+  $JAVA_BIN -jar $FLOWDROID_BIN -a $1 -s $SOURCES_SINKS -o $OUTPUT_XML -p $ANDROID_JAR -gi $2 -ac $3 $FLOWDROID_OPT
 }
 
 
@@ -43,6 +46,8 @@ fi
 if [ ! -f $INPUT_FILE ]; then
   error "File $INPUT_FILE does not exist"
 fi
+
+OUTPUT_XML=$(realpath $OUTPUT_XML)
 
 if [ -f $OUTPUT_XML ]; then
   rm $OUTPUT_XML
@@ -68,13 +73,15 @@ fi
 
 # Extract aar/jar file
 TEMP=$(mktemp -d)
+mkdir /tmp/libsec -p
 if [ $EXT = "aar" ]; then
   rm -f /tmp/classes.jar
   unzip $INPUT_FILE classes.jar -d /tmp
   unzip /tmp/classes.jar -d $TEMP
-  rm -f /tmp/classes.jar
+  mv /tmp/classes.jar "/tmp/libsec/$GROUPID+$ARTIFACTID+$VERSION.jar"
 else
   unzip $INPUT_FILE -d $TEMP
+  cp $INPUT_FILE /tmp/libsec/
 fi
 
 
@@ -97,7 +104,7 @@ done <<< "$AAR_DEPS"
 CLASSPATH="$ANDROID_JAR:$TEMP"
 for lib in $DEPS_DIR/*
 do
-  CLASSPATH="$CLASSPATH:$lib"
+  [ -f $lib ] && CLASSPATH="$CLASSPATH:$lib"
 done
 
 
@@ -108,12 +115,12 @@ KOTLIN_FILES=$(find $TEMP -name '*.kt')
 
 # Compile source files to bytecode
 cd $TEMP
-[[ ! -z $JAVA_FILES ]] && javac -cp $CLASSPATH $JAVA_FILES
+[[ ! -z $JAVA_FILES ]] && javac -proc:none -cp $CLASSPATH $JAVA_FILES
 [[ ! -z $KOTLIN_FILES ]] && kotlinc -classpath $CLASSPATH $KOTLIN_FILES
 
 
 # Run FlowDroid (what a useful comment)
-run_flowdroid $TEMP 
+run_flowdroid $TEMP $GROUPID $CLASSPATH
 
 
 # Clean up the temporary directory and exit

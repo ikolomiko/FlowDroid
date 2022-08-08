@@ -468,12 +468,13 @@ public abstract class BaseSourceSinkManager implements ISourceSinkManager, IOneS
 			}
 		}
 
+		/*
 		// This call might read out sensitive data from the UI
 		if ((!oneSourceAtATime || osaatType == SourceType.UISource)) {
 			def = getUISourceDefinition(sCallSite, cfg);
 			if (def != null)
 				return def;
-		}
+		}*/
 
 		// This statement might access a sensitive parameter in a callback
 		// method
