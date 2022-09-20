@@ -37,7 +37,7 @@ public abstract class ConcurrentAbstractionPathBuilder extends AbstractAbstracti
 		if (res == null || res.isEmpty())
 			return;
 
-		logger.info("Obtainted {} connections between sources and sinks", res.size());
+		//logger.info("Obtainted {} connections between sources and sinks", res.size());
 
 		// Notify the listeners that the solver has been started
 		for (IMemoryBoundedSolverStatusNotification listener : notificationListeners)
@@ -57,7 +57,7 @@ public abstract class ConcurrentAbstractionPathBuilder extends AbstractAbstracti
 			}
 
 			// Schedule the main abstraction
-			logger.info(String.format("Building path %d...", ++curResIdx));
+			//logger.info(String.format("Building path %d...", ++curResIdx));
 			Runnable task = getTaintPathTask(abs);
 			if (task != null)
 				executor.execute(task);

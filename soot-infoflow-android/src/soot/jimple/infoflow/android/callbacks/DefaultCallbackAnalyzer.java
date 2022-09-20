@@ -89,7 +89,7 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 				// Do we have to start from scratch or do we have a worklist to
 				// process?
 				if (callbackWorklist == null) {
-					logger.info("Collecting callbacks in DEFAULT mode...");
+					//logger.info("Collecting callbacks in DEFAULT mode...");
 					callbackWorklist = new HashMultiMap<>();
 
 					// Find the mappings between classes and layouts
@@ -97,6 +97,7 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 
 					// Process the callback classes directly reachable from the
 					// entry points
+					System.out.println("*****START LISTING CLASSES AND METHODS*****");
 					for (SootClass sc : entryPointClasses) {
 						// Check whether we're still running
 						if (isKilled != null)
@@ -122,8 +123,9 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 						analyzeMethodOverrideCallbacks(sc);
 						analyzeClassInterfaceCallbacks(sc, sc, sc);
 					}
+					System.out.println("*****END LISTING CLASSES AND METHODS*****");
 					reachableChangedListener = Scene.v().getReachableMethods().listener();
-					logger.info("Callback analysis done.");
+					//logger.info("Callback analysis done.");
 				} else {
 					// Find the mappings between classes and layouts
 					findClassLayoutMappings();
@@ -141,8 +143,8 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 					}
 
 					// Incremental mode, only process the worklist
-					logger.info(String.format("Running incremental callback analysis for %d components...",
-							callbackWorklist.size()));
+					//logger.info(String.format("Running incremental callback analysis for %d components...",
+					//		callbackWorklist.size()));
 
 					MultiMap<SootClass, SootMethod> workList = new HashMultiMap<>(callbackWorklist);
 					for (Iterator<SootClass> it = workList.keySet().iterator(); it.hasNext();) {
@@ -185,7 +187,7 @@ public class DefaultCallbackAnalyzer extends AbstractCallbackAnalyzer implements
 						// Check for further callback declarations
 						analyzeReachableMethods(componentClass, entryClasses);
 					}
-					logger.info("Incremental callback analysis done.");
+					//logger.info("Incremental callback analysis done.");
 				}
 
 				// Notify the listeners that the solver has been terminated

@@ -180,7 +180,7 @@ public class InterproceduralConstantValuePropagator extends SceneTransformer {
 
 	@Override
 	protected void internalTransform(String phaseName, Map<String, String> options) {
-		logger.info("Removing side-effect free methods is " + (removeSideEffectFreeMethods ? "enabled" : "disabled"));
+		//logger.info("Removing side-effect free methods is " + (removeSideEffectFreeMethods ? "enabled" : "disabled"));
 
 		// Clear up any potential old state
 		propagationWorklist.clear();

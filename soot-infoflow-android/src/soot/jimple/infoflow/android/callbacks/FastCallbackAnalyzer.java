@@ -38,7 +38,7 @@ public class FastCallbackAnalyzer extends AbstractCallbackAnalyzer {
 	@Override
 	public void collectCallbackMethods() {
 		super.collectCallbackMethods();
-		logger.info("Collecting callbacks in FAST mode...");
+		//logger.info("Collecting callbacks in FAST mode...");
 
 		// Find the mappings between classes and layouts
 		findClassLayoutMappings();

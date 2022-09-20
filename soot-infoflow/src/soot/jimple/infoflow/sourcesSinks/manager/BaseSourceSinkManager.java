@@ -171,7 +171,7 @@ public abstract class BaseSourceSinkManager implements ISourceSinkManager, IOneS
 		for (CallbackDefinition cb : callbackMethods)
 			this.callbackMethods.put(cb.getTargetMethod(), cb);
 
-		logger.info(String.format("Created a SourceSinkManager with %d sources, %d sinks, and %d callback methods.",
+		System.out.println(String.format("Created a SourceSinkManager with %d sources, %d sinks, and %d callback methods.",
 				this.sourceDefs.size(), this.sinkDefs.size(), this.callbackMethods.size()));
 	}
 

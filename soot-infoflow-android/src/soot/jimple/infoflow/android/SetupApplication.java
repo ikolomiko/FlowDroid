@@ -425,10 +425,11 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			if (sc != null) {
 				if (!isFirstParty(sc)) {
 					entrypoints.add(sc);
-					System.out.println(sc.getName());
+					//System.out.println(sc.getName());
 				}
 			}
 		}
+		System.out.println("Found " + entrypoints.size() + " components");
 		
 		/*
 		Set<String> entryPoints = manifest.getEntryPointClasses();
@@ -544,7 +545,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			constructCallgraphInternal();
 		}
 
-		logger.info("Entry point calculation done.");
+		//logger.info("Entry point calculation done.");
 		createSourceSinkProvider(entryPoint, lfp);
 	}
 
@@ -629,7 +630,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			configureCallgraph();
 
 		// Construct the actual callgraph
-		logger.info("Constructing the callgraph...");
+		//logger.info("Constructing the callgraph...");
 		PackManager.v().getPack("cg").apply();
 
 		// ICC instrumentation
@@ -855,7 +856,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			}
 		}
 		if (!abortedEarly)
-			logger.info("Callback analysis terminated normally");
+			//logger.info("Callback analysis terminated normally");
 
 		// Serialize the callbacks
 		if (callbackConfig.isSerializeCallbacks()) {
@@ -1173,7 +1174,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 	 * metadata analysis
 	 */
 	private void initializeSoot() {
-		logger.info("Initializing Soot...");
+		//logger.info("Initializing Soot...");
 
 		final String androidJar = config.getAnalysisFileConfig().getAndroidPlatformDir();
 		final String apkFileLocation = config.getAnalysisFileConfig().getTargetAPKFile();
@@ -1215,7 +1216,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 		configureCallgraph();
 
 		// Load whatever we need
-		logger.info("Loading dex files...");
+		//logger.info("Loading dex files...");
 		Scene.v().loadNecessaryClasses();
 
 		// Make sure that we have valid Jimple bodies
@@ -1539,19 +1540,19 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 			throw new RuntimeException("Callgraph construction failed", e);
 		}
 		callbackDuration = Math.round((System.nanoTime() - callbackDuration) / 1E9);
-		logger.info(
-				String.format("Collecting callbacks and building a callgraph took %d seconds", (int) callbackDuration));
+		//logger.info(
+		//		String.format("Collecting callbacks and building a callgraph took %d seconds", (int) callbackDuration));
 
 		final Collection<? extends ISourceSinkDefinition> sources = getSources();
 		final Collection<? extends ISourceSinkDefinition> sinks = getSinks();
 		final String apkFileLocation = config.getAnalysisFileConfig().getTargetAPKFile();
-		if (config.getOneComponentAtATime())
-			logger.info("Running data flow analysis on {} (component {}/{}: {}) with {} sources and {} sinks...",
-					apkFileLocation, (entrypoints.size() - numEntryPoints), entrypoints.size(), entrypoint,
-					sources == null ? 0 : sources.size(), sinks == null ? 0 : sinks.size());
-		else
-			logger.info("Running data flow analysis on {} with {} sources and {} sinks...", apkFileLocation,
-					sources == null ? 0 : sources.size(), sinks == null ? 0 : sinks.size());
+		// if (config.getOneComponentAtATime())
+		// 	logger.info("Running data flow analysis on {} (component {}/{}: {}) with {} sources and {} sinks...",
+		// 			apkFileLocation, (entrypoints.size() - numEntryPoints), entrypoints.size(), entrypoint,
+		// 			sources == null ? 0 : sources.size(), sinks == null ? 0 : sinks.size());
+		// else
+		// 	logger.info("Running data flow analysis on {} with {} sources and {} sinks...", apkFileLocation,
+		// 			sources == null ? 0 : sources.size(), sinks == null ? 0 : sinks.size());
 
 		// Create a new entry point and compute the flows in it. If we
 		// analyze all components together, we do not need a new callgraph,
@@ -1576,9 +1577,9 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 		{
 			int resCount = resultAggregator.getLastResults() == null ? 0 : resultAggregator.getLastResults().size();
 			if (config.getOneComponentAtATime())
-				logger.info("Found {} leaks for component {}", resCount, entrypoint);
+				System.out.println(String.format("Found %d leaks for component %d", resCount, entrypoint));
 			else
-				logger.info("Found {} leaks", resCount);
+				System.out.println(String.format("Found %d leaks", resCount));
 		}
 
 		// Update the performance object with the real data

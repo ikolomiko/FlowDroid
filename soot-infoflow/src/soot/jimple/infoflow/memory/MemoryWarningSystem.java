@@ -190,8 +190,8 @@ public class MemoryWarningSystem {
 			// If element has changed, it needs to removed first
 			warningSystems.remove(this);
 			this.threshold = warningThreshold;
-			logger.info(MessageFormat.format("Registered a memory warning system for {0} MiB",
-					(threshold / 1024D / 1024D)));
+			//logger.info(MessageFormat.format("Registered a memory warning system for {0} MiB",
+			//		(threshold / 1024D / 1024D)));
 			warningSystems.add(this);
 			MemoryUsage usage = tenuredGenPool.getUsage();
 			long threshold = warningSystems.iterator().next().threshold;
@@ -269,7 +269,7 @@ public class MemoryWarningSystem {
 		// Avoid duplicate attempts to unregister the listener
 		if (isClosed)
 			return;
-		logger.info("Shutting down the memory warning system...");
+		//logger.info("Shutting down the memory warning system...");
 		synchronized (warningSystems) {
 			warningSystems.remove(this);
 		}

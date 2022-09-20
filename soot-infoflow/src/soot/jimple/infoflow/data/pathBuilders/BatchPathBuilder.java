@@ -40,7 +40,7 @@ public class BatchPathBuilder extends AbstractAbstractionPathBuilder {
 			// Build the next batch
 			while (batch.size() < this.batchSize && resIt.hasNext())
 				batch.add(resIt.next());
-			logger.info("Running path reconstruction batch {} with {} elements", batchId++, batch.size());
+			//logger.info("Running path reconstruction batch {} with {} elements", batchId++, batch.size());
 
 			// Run the next batch
 			innerBuilder.reset();

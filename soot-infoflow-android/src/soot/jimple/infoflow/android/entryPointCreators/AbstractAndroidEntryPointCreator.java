@@ -44,7 +44,7 @@ public abstract class AbstractAndroidEntryPointCreator extends BaseEntryPointCre
 		SootMethod method = findMethod(currentClass, subsignature);
 
 		if (method == null) {
-			logger.warn("Could not find Android entry point method: {}", subsignature);
+			//logger.warn("Could not find Android entry point method: {}", subsignature);
 			return null;
 		}
 

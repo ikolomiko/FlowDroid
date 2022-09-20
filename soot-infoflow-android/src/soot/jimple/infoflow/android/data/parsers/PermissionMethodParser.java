@@ -146,8 +146,8 @@ public class PermissionMethodParser implements ISourceSinkDefinitionProvider {
 					Matcher mNoRet = pNoRet.matcher(line);
 					if (mNoRet.find()) {
 						createMethod(mNoRet);
-					} else
-						logger.warn(String.format("Line does not match: %s", line));
+					} //else
+						//logger.warn(String.format("Line does not match: %s", line));
 				}
 			}
 		}

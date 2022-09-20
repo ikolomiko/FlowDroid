@@ -129,11 +129,11 @@ public class RecursivePathBuilder extends AbstractAbstractionPathBuilder {
 	 * @param res The data flow tracker results
 	 */
 	private void computeTaintPathsInternal(final Set<AbstractionAtSink> res) {
-		logger.debug("Running path reconstruction");
-		logger.info("Obtainted {} connections between sources and sinks", res.size());
+		//logger.debug("Running path reconstruction");
+		//logger.info("Obtainted {} connections between sources and sinks", res.size());
 		int curResIdx = 0;
 		for (final AbstractionAtSink abs : res) {
-			logger.info(String.format("Building path %d...", ++curResIdx));
+			//logger.info(String.format("Building path %d...", ++curResIdx));
 			executor.execute(new Runnable() {
 
 				@Override

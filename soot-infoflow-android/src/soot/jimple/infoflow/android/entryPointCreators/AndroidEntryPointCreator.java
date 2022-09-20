@@ -112,7 +112,7 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 		// from previous runs
 		reset();
 
-		logger.info(String.format("Creating Android entry point for %d components...", components.size()));
+		//logger.info(String.format("Creating Android entry point for %d components...", components.size()));
 
 		// For some weird reason unknown to anyone except the flying spaghetti
 		// monster, the onCreate() methods of content providers run even before

@@ -265,7 +265,7 @@ public class Infoflow extends AbstractInfoflow {
 
 			// Print and check our configuration
 			checkAndFixConfiguration();
-			config.printSummary();
+			//config.printSummary();
 
 			// Register a memory watcher
 			if (memoryWatcher != null) {
@@ -282,8 +282,8 @@ public class Infoflow extends AbstractInfoflow {
 			constructCallgraph();
 			performanceData
 					.setCallgraphConstructionSeconds((int) Math.round((System.nanoTime() - beforeCallgraph) / 1E9));
-			logger.info(String.format("Callgraph construction took %d seconds",
-					performanceData.getCallgraphConstructionSeconds()));
+			//logger.info(String.format("Callgraph construction took %d seconds",
+			//		performanceData.getCallgraphConstructionSeconds()));
 
 			// Initialize the source sink manager
 			if (sourcesSinks != null)
@@ -293,7 +293,7 @@ public class Infoflow extends AbstractInfoflow {
 			if (config.getCodeEliminationMode() != CodeEliminationMode.NoCodeElimination) {
 				long currentMillis = System.nanoTime();
 				eliminateDeadCode(sourcesSinks);
-				logger.info("Dead code elimination took " + (System.nanoTime() - currentMillis) / 1E9 + " seconds");
+				//logger.info("Dead code elimination took " + (System.nanoTime() - currentMillis) / 1E9 + " seconds");
 			}
 
 			// After constant value propagation, we might find more call edges
@@ -304,7 +304,7 @@ public class Infoflow extends AbstractInfoflow {
 			}
 
 			if (config.getCallgraphAlgorithm() != CallgraphAlgorithm.OnDemand)
-				logger.info("Callgraph has {} edges", Scene.v().getCallGraph().size());
+				System.out.println(String.format("Callgraph has %d edges", Scene.v().getCallGraph().size()));
 
 			IInfoflowCFG iCfg = icfgFactory.buildBiDirICFG(config.getCallgraphAlgorithm(),
 					config.getEnableExceptionTracking());
@@ -315,8 +315,8 @@ public class Infoflow extends AbstractInfoflow {
 			// Gather performance data
 			performanceData.setTotalRuntimeSeconds((int) Math.round((System.nanoTime() - beforeCallgraph) / 1E9));
 			performanceData.updateMaxMemoryConsumption(getUsedMemory());
-			logger.info(String.format("Data flow solver took %d seconds. Maximum memory consumption: %d MB",
-					performanceData.getTotalRuntimeSeconds(), performanceData.getMaxMemoryConsumption()));
+			// logger.info(String.format("Data flow solver took %d seconds. Maximum memory consumption: %d MB",
+			// 		performanceData.getTotalRuntimeSeconds(), performanceData.getMaxMemoryConsumption()));
 
 			// Provide the handler with the final results
 			for (ResultsAvailableHandler handler : onResultsAvailable)
@@ -338,7 +338,7 @@ public class Infoflow extends AbstractInfoflow {
 
 	private void runTaintAnalysis(final ISourceSinkManager sourcesSinks, final Set<String> additionalSeeds,
 			IInfoflowCFG iCfg, InfoflowPerformanceData performanceData) {
-		logger.info("Starting Taint Analysis");
+		//logger.info("Starting Taint Analysis");
 
 		// Make sure that we have a path builder factory
 		if (pathBuilderFactory == null)
@@ -442,18 +442,18 @@ public class Infoflow extends AbstractInfoflow {
 			long beforePathReconstruction = 0;
 			try {
 				// Print our configuration
-				if (config.getFlowSensitiveAliasing() && !aliasingStrategy.isFlowSensitive())
-					logger.warn("Trying to use a flow-sensitive aliasing with an "
-							+ "aliasing strategy that does not support this feature");
-				if (config.getFlowSensitiveAliasing()
-						&& config.getSolverConfiguration().getMaxJoinPointAbstractions() > 0)
-					logger.warn("Running with limited join point abstractions can break context-"
-							+ "sensitive path builders");
+				// if (config.getFlowSensitiveAliasing() && !aliasingStrategy.isFlowSensitive())
+				// 	logger.warn("Trying to use a flow-sensitive aliasing with an "
+				// 			+ "aliasing strategy that does not support this feature");
+				// if (config.getFlowSensitiveAliasing()
+				// 		&& config.getSolverConfiguration().getMaxJoinPointAbstractions() > 0)
+				// 	logger.warn("Running with limited join point abstractions can break context-"
+				// 			+ "sensitive path builders");
 
 				// We have to look through the complete program to find
 				// sources which are then taken as seeds.
 				int sinkCount = 0;
-				logger.info("Looking for sources and sinks...");
+				//logger.info("Looking for sources and sinks...");
 
 				for (SootMethod sm : getMethodsForSeeds(iCfg))
 					sinkCount += scanMethodForSourcesSinks(sourcesSinks, forwardProblem, sm);
@@ -479,8 +479,8 @@ public class Infoflow extends AbstractInfoflow {
 					logger.error("No sinks found, aborting analysis");
 					continue;
 				}
-				logger.info("Source lookup done, found {} sources and {} sinks.",
-						forwardProblem.getInitialSeeds().size(), sinkCount);
+				//logger.info("Source lookup done, found {} sources and {} sinks.",
+				//		forwardProblem.getInitialSeeds().size(), sinkCount);
 
 				// Update the performance statistics
 				performanceData.setSourceCount(forwardProblem.getInitialSeeds().size());
@@ -554,8 +554,8 @@ public class Infoflow extends AbstractInfoflow {
 
 				// Print taint wrapper statistics
 				if (taintWrapper != null) {
-					logger.info("Taint wrapper hits: " + taintWrapper.getWrapperHits());
-					logger.info("Taint wrapper misses: " + taintWrapper.getWrapperMisses());
+					//logger.info("Taint wrapper hits: " + taintWrapper.getWrapperHits());
+					//logger.info("Taint wrapper misses: " + taintWrapper.getWrapperMisses());
 				}
 
 				// Give derived classes a chance to do whatever they need before we remove stuff
@@ -574,11 +574,11 @@ public class Infoflow extends AbstractInfoflow {
 				if (nativeCallHandler != null)
 					nativeCallHandler.shutdown();
 
-				logger.info(
-						"IFDS problem with {} forward and {} backward edges solved in {} seconds, processing {} results...",
-						forwardSolver.getPropagationCount(),
-						aliasingStrategy.getSolver() == null ? 0 : aliasingStrategy.getSolver().getPropagationCount(),
-						taintPropagationSeconds, res == null ? 0 : res.size());
+				//logger.info(
+				//		"IFDS problem with {} forward and {} backward edges solved in {} seconds, processing {} results...",
+				//		forwardSolver.getPropagationCount(),
+				//		aliasingStrategy.getSolver() == null ? 0 : aliasingStrategy.getSolver().getPropagationCount(),
+				//		taintPropagationSeconds, res == null ? 0 : res.size());
 
 				// Update the statistics
 				{
@@ -597,7 +597,7 @@ public class Infoflow extends AbstractInfoflow {
 				// the results set, the other abstractions can be killed
 				// now.
 				performanceData.updateMaxMemoryConsumption(getUsedMemory());
-				logger.info(String.format("Current memory consumption: %d MB", getUsedMemory()));
+				//logger.info(String.format("Current memory consumption: %d MB", getUsedMemory()));
 
 				if (timeoutWatcher != null)
 					timeoutWatcher.stop();
@@ -630,7 +630,7 @@ public class Infoflow extends AbstractInfoflow {
 				// Report the remaining memory consumption
 				Runtime.getRuntime().gc();
 				performanceData.updateMaxMemoryConsumption(getUsedMemory());
-				logger.info(String.format("Memory consumption after cleanup: %d MB", getUsedMemory()));
+				//logger.info(String.format("Memory consumption after cleanup: %d MB", getUsedMemory()));
 
 				// Apply the timeout to path reconstruction
 				if (config.getPathConfiguration().getPathReconstructionTimeout() > 0) {
@@ -733,9 +733,9 @@ public class Infoflow extends AbstractInfoflow {
 			performanceData.setPathReconstructionSeconds(
 					(int) Math.round((System.nanoTime() - beforePathReconstruction) / 1E9));
 
-			logger.info(String.format("Memory consumption after path building: %d MB", getUsedMemory()));
-			logger.info(String.format("Path reconstruction took %d seconds",
-					performanceData.getPathReconstructionSeconds()));
+			//logger.info(String.format("Memory consumption after path building: %d MB", getUsedMemory()));
+			//logger.info(String.format("Path reconstruction took %d seconds",
+			//		performanceData.getPathReconstructionSeconds()));
 		}
 
 		// Execute the post-processors
@@ -746,10 +746,11 @@ public class Infoflow extends AbstractInfoflow {
 			logger.warn("No results found.");
 		else if (logger.isInfoEnabled()) {
 			for (ResultSinkInfo sink : results.getResults().keySet()) {
-				logger.info("The sink {} in method {} was called with values from the following sources:", sink,
-						iCfg.getMethodOf(sink.getStmt()).getSignature());
+				System.out.println("*****START LISTING SOURCES OF SINK*****");
+				System.out.println(String.format("The sink %s in method %s was called with values from the following sources:", sink,
+						iCfg.getMethodOf(sink.getStmt()).getSignature()));
 				for (ResultSourceInfo source : results.getResults().get(sink)) {
-					logger.info("- {} in method {}", source, iCfg.getMethodOf(source.getStmt()).getSignature());
+					System.out.println(String.format("- %s in method %s", source, iCfg.getMethodOf(source.getStmt()).getSignature()));
 					if (source.getPath() != null) {
 						logger.info("\ton Path: ");
 						for (Unit p : source.getPath()) {
@@ -758,6 +759,7 @@ public class Infoflow extends AbstractInfoflow {
 						}
 					}
 				}
+				System.out.println("*****END LISTING SOURCES OF SINK*****");
 			}
 		}
 	}
@@ -1063,13 +1065,13 @@ public class Infoflow extends AbstractInfoflow {
 			SolverConfiguration solverConfig) {
 		switch (solverConfig.getDataFlowSolver()) {
 		case ContextFlowSensitive:
-			logger.info("Using context- and flow-sensitive solver");
+			//logger.info("Using context- and flow-sensitive solver");
 			return new soot.jimple.infoflow.solver.fastSolver.InfoflowSolver(problem, executor);
 		case FlowInsensitive:
-			logger.info("Using context-sensitive, but flow-insensitive solver");
+			//logger.info("Using context-sensitive, but flow-insensitive solver");
 			return new soot.jimple.infoflow.solver.fastSolver.flowInsensitive.InfoflowSolver(problem, executor);
 		case GarbageCollecting:
-			logger.info("Using garbage-collecting solver");
+			//logger.info("Using garbage-collecting solver");
 			IInfoflowSolver solver = new soot.jimple.infoflow.solver.gcSolver.InfoflowSolver(problem, executor);
 			solverPeerGroup.addSolver(solver);
 			solver.setPeerGroup(solverPeerGroup);
