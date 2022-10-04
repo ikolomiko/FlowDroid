@@ -6,7 +6,7 @@ JAVAC_BIN="/usr/bin/javac"
 KOTLINC_BIN="/usr/bin/kotlinc"
 
 FLOWDROID_ROOT="$(dirname $(realpath "$0"))"
-FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd/target/soot-infoflow-cmd-jar-with-dependencies.jar"
+FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd-jar-with-dependencies.jar"
 SOURCES_SINKS="$FLOWDROID_ROOT/SourcesAndSinks.txt"
 ANDROID_JAR="$FLOWDROID_ROOT/android-29.jar"
 FLOWDROID_OPT=" -r -os -mc 99999 -md 99999 -mt 8 -ps"
