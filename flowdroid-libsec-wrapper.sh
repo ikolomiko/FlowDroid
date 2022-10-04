@@ -52,7 +52,7 @@ if [ ! -f $INPUT_FILE ]; then
 fi
 
 
-OUTPUT_PATH=$(realpath $(dirname $OUTPUT_PATH))
+OUTPUT_PATH=$(realpath $OUTPUT_PATH)
 mkdir -p $OUTPUT_PATH
 
 
