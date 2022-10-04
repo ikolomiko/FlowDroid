@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 OUTPUT_ROOT="$1"
 

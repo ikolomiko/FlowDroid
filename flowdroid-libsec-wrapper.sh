@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 SECONDS=0
 JAVA_BIN="/usr/bin/java" # Java version >= 1.8
