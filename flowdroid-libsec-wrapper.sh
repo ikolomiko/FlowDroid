@@ -51,8 +51,8 @@ if [ ! -f $INPUT_FILE ]; then
 fi
 
 
-OUTPUT_PATH=$(realpath $OUTPUT_PATH)
 mkdir -p $OUTPUT_PATH
+OUTPUT_PATH=$(realpath $OUTPUT_PATH)
 
 
 # Check input file extension
@@ -73,22 +73,20 @@ fi
 
 # Extract aar/jar file
 TEMP=$(mktemp -d)
-mkdir /tmp/libsec -p
 if [ $EXT = "aar" ]; then
   rm -f /tmp/classes.jar
   unzip $INPUT_FILE classes.jar -d /tmp
   unzip /tmp/classes.jar -d $TEMP
-  mv /tmp/classes.jar "/tmp/libsec/$GROUPID+$ARTIFACTID+$VERSION.jar"
 else
   unzip $INPUT_FILE -d $TEMP
-  cp $INPUT_FILE /tmp/libsec/
 fi
 
 
+DEPS_DIR=$(mktemp -d)
 # Get all dependencies (except android.jar)
 get_dependencies() {
-  DEPS_DIR=$(mktemp -d)
-  $JAVA_BIN -jar $IVY_BIN -dependency $GROUPID $ARTIFACTID $VERSION -retrieve "$DEPS_DIR/[organization]+[artifact]+[revision](+[classifier]).[ext]" -settings $IVY_SETTINGS
+  rm -rf $FLOWDROID_ROOT/cachedir
+  $JAVA_BIN -jar $IVY_BIN -dependency $GROUPID $ARTIFACTID $VERSION -retrieve "$DEPS_DIR/[organization]+[artifact]+[revision](+[classifier]).[ext]" -settings $IVY_SETTINGS -cache cachedir -refresh
   rm -f $DEPS_DIR/$BASE_NAME
 }
 get_dependencies 2>&1 | tee $OUTPUT_PATH/ivy-log.txt 
@@ -115,17 +113,19 @@ JAVA_FILES=$(find $TEMP -name '*.java')
 KOTLIN_FILES=$(find $TEMP -name '*.kt')
 
 
-# Compile source files to bytecode
-cd $TEMP
-if [[ ! -z $JAVA_FILES ]]; then 
-  echo $RED Compiling java source files for $LIBRARY_ID+$VERSION $NC
-  javac -proc:none -cp $CLASSPATH $JAVA_FILES
-fi
-if [[ ! -z $KOTLIN_FILES ]]; then 
-  echo $RED Compiling kotlin source files for $LIBRARY_ID+$VERSION $NC
-  kotlinc -classpath $CLASSPATH $KOTLIN_FILES
-fi
-
+# Compile source files to bytecode (if there are any)
+compile() {
+  cd $TEMP
+  if [[ ! -z $JAVA_FILES ]]; then 
+    echo $RED Compiling java source files for $LIBRARY_ID+$VERSION $NC
+    javac -proc:none -cp $CLASSPATH $JAVA_FILES
+  fi
+  if [[ ! -z $KOTLIN_FILES ]]; then 
+    echo $RED Compiling kotlin source files for $LIBRARY_ID+$VERSION $NC
+    kotlinc -classpath $CLASSPATH $KOTLIN_FILES
+  fi
+}
+[[ ! -z $JAVA_FILES && ! -z $KOTLIN_FILES ]] && compile 2>&1 | tee $OUTPUT_PATH/compile-log.txt
 
 # Run FlowDroid (what a useful comment)
 run_flowdroid $TEMP $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
@@ -134,5 +134,6 @@ run_flowdroid $TEMP $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.tx
 # Clean up the temporary directory and exit
 rm -rf $TEMP
 rm -rf $DEPS_DIR
+rm -rf $FLOWDROID_ROOT/cachedir
 echo "Took $SECONDS seconds"
 exit 0

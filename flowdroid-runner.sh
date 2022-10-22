@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+LIBS_ROOT="../libsec-scraper/updated-libs"
 
+SECONDS=0
+GREEN='\033[0;32m'
+NC='\033[0m'
 OUTPUT_ROOT="$1"
-FAIL=0
-
 if [ -z $1 ]; then
     echo "usage: bash flowdroid-runner.sh <output dir>"
     exit 1
@@ -10,8 +12,6 @@ fi
 
 mkdir -p $OUTPUT_ROOT
 OUTPUT_ROOT=$(realpath $OUTPUT_ROOT)
-
-LIBS_ROOT="../libsec-scraper/updated-libs"
 
 start_analysis() {
 #LIBRARY_ID="$1" # GROUP_ID+ARTIFACT_ID+VERSION
@@ -21,7 +21,12 @@ start_analysis() {
  ./flowdroid-libsec-wrapper.sh $1 $2 $3
 }
 
-for subfolder in $(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d); do
+ITER=0
+folders=$(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d)
+TOTAL=$(wc -l <<< $folders)
+for subfolder in $folders; do
+    ((++ITER))
+    echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
     base_id=$(basename $subfolder)
     for file in $(find $subfolder -mindepth 1 -maxdepth 1 -type f -name "*.aar" -or -name "*.jar"); do
         filename=$(basename $file)
@@ -30,12 +35,8 @@ for subfolder in $(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d); do
         input_file=$(realpath $file)
         mkdir -p $OUTPUT_ROOT/$base_id/$version
 
-        start_analysis $library_id $input_file $(realpath $OUTPUT_ROOT/$base_id/$version) &
-
-        for job in $(jobs -p); do
-            wait $job || let "FAIL+=1"
-        done
+        start_analysis $library_id $input_file $(realpath $OUTPUT_ROOT/$base_id/$version)
     done
 done
 
-echo "Fails: $FAIL" > fails.txt
+echo -e "${GREEN}Took $SECONDS seconds to finish them all${NC}"

@@ -41,9 +41,6 @@
         <filesystem name="local">
             <ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
             <artifact pattern="${ivy.local.default.root}/${ivy.local.default.artifact.pattern}" />
-            <!-- Type the absolute path of the libs directory below -->
-            <artifact pattern="/tmp/libsec/[organization]+[module]+[revision].aar"/>
-            <artifact pattern="/tmp/libsec/[organization]+[module]+[revision].jar"/>
         </filesystem>
 
         <!-- Main lookup chain -->
