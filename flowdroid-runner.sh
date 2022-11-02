@@ -22,8 +22,8 @@ start_analysis() {
 }
 
 ITER=0
-folders=$(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d)
-TOTAL=$(wc -l <<< $folders)
+folders="$(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d)"
+TOTAL=$(wc -l <<< "$folders")
 for subfolder in $folders; do
     ((++ITER))
     echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
