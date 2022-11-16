@@ -1,0 +1,627 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ixsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+<profiles>
+  <profile>
+    <id>libsec</id>
+    <repositories>
+   
+    <repository>
+        <id>Central</id>
+        <name>Central</name>
+        <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+    
+    <repository>
+        <id>JCenter</id>
+        <name>JCenter</name>
+        <url>https://jcenter.bintray.com/</url>
+    </repository>
+    
+    <repository>
+        <id>Google</id>
+        <name>Google</name>
+        <url>https://maven.google.com/</url>
+    </repository>
+    
+    <repository>
+        <id>Mulesoft</id>
+        <name>Mulesoft</name>
+        <url>https://repository.mulesoft.org/nexus/content/repositories/public/</url>
+    </repository>
+    
+    <repository>
+        <id>Gradle Releases</id>
+        <name>Gradle Releases</name>
+        <url>https://repo.gradle.org/gradle/libs-releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Liferay Public</id>
+        <name>Liferay Public</name>
+        <url>https://repository.liferay.com/nexus/content/repositories/public/</url>
+    </repository>
+    
+    <repository>
+        <id>Imgly</id>
+        <name>Imgly</name>
+        <url>https://artifactory.img.ly/artifactory/imgly/</url>
+    </repository>
+    
+    <repository>
+        <id>Scanbot</id>
+        <name>Scanbot</name>
+        <url>https://nexus.scanbot.io/nexus/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>SurfStudio</id>
+        <name>SurfStudio</name>
+        <url>https://artifactory.surfstudio.ru/artifactory/libs-release-local/</url>
+    </repository>
+    
+    <repository>
+        <id>Aliyun</id>
+        <name>Aliyun</name>
+        <url>https://maven.aliyun.com/nexus/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>PentahoOmni</id>
+        <name>PentahoOmni</name>
+        <url>https://nexus.pentaho.org/content/groups/omni/</url>
+    </repository>
+    
+    <repository>
+        <id>SciJava Public</id>
+        <name>SciJava Public</name>
+        <url>https://maven.scijava.org/content/repositories/public/</url>
+    </repository>
+    
+    <repository>
+        <id>Kakao</id>
+        <name>Kakao</name>
+        <url>https://devrepo.kakao.com/nexus/content/groups/public/</url>
+    </repository>
+    
+    <repository>
+        <id>Couchbase</id>
+        <name>Couchbase</name>
+        <url>https://files.couchbase.com/maven2/</url>
+    </repository>
+    
+    <repository>
+        <id>Igexin</id>
+        <name>Igexin</name>
+        <url>https://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Yahoo</id>
+        <name>Yahoo</name>
+        <url>https://dl.bintray.com/yahoo/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Compose</id>
+        <name>Compose</name>
+        <url>https://maven.pkg.jetbrains.space/public/p/compose/dev/</url>
+    </repository>
+    
+    <repository>
+        <id>Instabug</id>
+        <name>Instabug</name>
+        <url>https://sdks.instabug.com/nexus/repository/instabug-cp/</url>
+    </repository>
+    
+    <repository>
+        <id>PuNative</id>
+        <name>PuNative</name>
+        <url>https://dl.bintray.com/pubnative/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>IronSrcAndroid</id>
+        <name>IronSrcAndroid</name>
+        <url>https://dl.bintray.com/ironsource-mobile/android-adapters/</url>
+    </repository>
+    
+    <repository>
+        <id>Sumsub</id>
+        <name>Sumsub</name>
+        <url>https://maven.sumsub.com/repository/maven-public/</url>
+    </repository>
+    
+    <repository>
+        <id>InLocoMedia</id>
+        <name>InLocoMedia</name>
+        <url>https://dl.bintray.com/inlocomedia/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>WSO2 Dist</id>
+        <name>WSO2 Dist</name>
+        <url>https://dist.wso2.org/maven2/</url>
+    </repository>
+    
+    <repository>
+        <id>Pushe</id>
+        <name>Pushe</name>
+        <url>https://dl.bintray.com/pushe/android/</url>
+    </repository>
+    
+    <repository>
+        <id>Realm</id>
+        <name>Realm</name>
+        <url>https://dl.bintray.com/realm/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>CometchatCallTeam</id>
+        <name>CometchatCallTeam</name>
+        <url>https://dl.cloudsmith.io/public/cometchat/call-team/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>NewsDog</id>
+        <name>NewsDog</name>
+        <url>https://dl.bintray.com/newsdog/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Embrace</id>
+        <name>Embrace</name>
+        <url>https://dl.bintray.com/embrace-io/mvn-public/</url>
+    </repository>
+    
+    <repository>
+        <id>Huawei</id>
+        <name>Huawei</name>
+        <url>https://developer.huawei.com/repo/</url>
+    </repository>
+    
+    <repository>
+        <id>MobileAds</id>
+        <name>MobileAds</name>
+        <url>https://dl.bintray.com/google/mobile-ads-adapters-android/</url>
+    </repository>
+    
+    <repository>
+        <id>AppLovin SDKs</id>
+        <name>AppLovin SDKs</name>
+        <url>https://dl.bintray.com/applovin/Android-Adapter-SDKs/</url>
+    </repository>
+    
+    <repository>
+        <id>AutonomX</id>
+        <name>AutonomX</name>
+        <url>https://artifact.autonomx.io/artifactory/libs-release/</url>
+    </repository>
+    
+    <repository>
+        <id>NBT-Adison-OW</id>
+        <name>NBT-Adison-OW</name>
+        <url>https://dl.bintray.com/nbt/adison-offerwall/</url>
+    </repository>
+    
+    <repository>
+        <id>IotIgnite</id>
+        <name>IotIgnite</name>
+        <url>https://repo.iot-ignite.com/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Datadog</id>
+        <name>Datadog</name>
+        <url>https://dl.bintray.com/datadog/datadog-maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Twilio</id>
+        <name>Twilio</name>
+        <url>https://dl.bintray.com/twilio/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Bugtags</id>
+        <name>Bugtags</name>
+        <url>https://dl.bintray.com/bugtags/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Novoda</id>
+        <name>Novoda</name>
+        <url>https://dl.bintray.com/novoda/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Wire Release</id>
+        <name>Wire Release</name>
+        <url>https://dl.bintray.com/wire-android/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Data2Viz Dev</id>
+        <name>Data2Viz Dev</name>
+        <url>https://maven.pkg.jetbrains.space/data2viz/p/maven/dev/</url>
+    </repository>
+    
+    <repository>
+        <id>Tensorflow</id>
+        <name>Tensorflow</name>
+        <url>https://dl.bintray.com/google/tensorflow/</url>
+    </repository>
+    
+    <repository>
+        <id>WSO2 Releases</id>
+        <name>WSO2 Releases</name>
+        <url>https://maven.wso2.org/nexus/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>CometchatAndroid</id>
+        <name>CometchatAndroid</name>
+        <url>https://dl.cloudsmith.io/public/cometchat/cometchat-pro-android/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Peer5</id>
+        <name>Peer5</name>
+        <url>https://sdk.peer5.com/android/</url>
+    </repository>
+    
+    <repository>
+        <id>ICM</id>
+        <name>ICM</name>
+        <url>https://maven.icm.edu.pl/artifactory/repo/</url>
+    </repository>
+    
+    <repository>
+        <id>Membrane SOA</id>
+        <name>Membrane SOA</name>
+        <url>https://repository.membrane-soa.org/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>AppLovin AA</id>
+        <name>AppLovin AA</name>
+        <url>https://dl.bintray.com/applovin/Android-Adapters/</url>
+    </repository>
+    
+    <repository>
+        <id>DashJInterface</id>
+        <name>DashJInterface</name>
+        <url>https://dl.bintray.com/dash/DashJInterface/</url>
+    </repository>
+    
+    <repository>
+        <id>ImageJ Public</id>
+        <name>ImageJ Public</name>
+        <url>https://maven.imagej.net/content/repositories/public/</url>
+    </repository>
+    
+    <repository>
+        <id>TrayisAndroid</id>
+        <name>TrayisAndroid</name>
+        <url>https://dl.bintray.com/trayis/android_lib/</url>
+    </repository>
+    
+    <repository>
+        <id>Jitpack</id>
+        <name>Jitpack</name>
+        <url>https://jitpack.io/</url>
+    </repository>
+    
+    <repository>
+        <id>SchibstedSpain</id>
+        <name>SchibstedSpain</name>
+        <url>https://dl.bintray.com/schibstedspain/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Microblink</id>
+        <name>Microblink</name>
+        <url>https://maven.microblink.com/</url>
+    </repository>
+    
+    <repository>
+        <id>LivotovLabs</id>
+        <name>LivotovLabs</name>
+        <url>https://dl.bintray.com/livotovlabs/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>SmartSoft</id>
+        <name>SmartSoft</name>
+        <url>https://dl.bintray.com/smartnsoft/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Swirlds</id>
+        <name>Swirlds</name>
+        <url>https://art.swirlds.com/artifactory/swirlds/</url>
+    </repository>
+    
+    <repository>
+        <id>Naver</id>
+        <name>Naver</name>
+        <url>https://naver.jfrog.io/artifactory/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Onfido</id>
+        <name>Onfido</name>
+        <url>https://dl.bintray.com/onfido/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Bilibili</id>
+        <name>Bilibili</name>
+        <url>https://dl.bintray.com/bilibili/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Data2Viz</id>
+        <name>Data2Viz</name>
+        <url>https://maven.pkg.jetbrains.space/data2viz/p/maven/public/</url>
+    </repository>
+    
+    <repository>
+        <id>IndoorAtlasBT</id>
+        <name>IndoorAtlasBT</name>
+        <url>https://dl.cloudsmith.io/public/indooratlas/mvn-public/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>OpenID</id>
+        <name>OpenID</name>
+        <url>https://dl.bintray.com/openid/net.openid/</url>
+    </repository>
+    
+    <repository>
+        <id>WebRTC</id>
+        <name>WebRTC</name>
+        <url>https://dl.bintray.com/google/webrtc/</url>
+    </repository>
+    
+    <repository>
+        <id>CometchatAndroid-team</id>
+        <name>CometchatAndroid-team</name>
+        <url>https://dl.cloudsmith.io/public/cometchat/cometchat-pro-team/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Exoplayer</id>
+        <name>Exoplayer</name>
+        <url>https://dl.bintray.com/google/exoplayer/</url>
+    </repository>
+    
+    <repository>
+        <id>Algolia</id>
+        <name>Algolia</name>
+        <url>https://dl.bintray.com/algolia/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>UrbanAirshipAndroid</id>
+        <name>UrbanAirshipAndroid</name>
+        <url>https://dl.bintray.com/urbanairship/android/</url>
+    </repository>
+    
+    <repository>
+        <id>CometchatAndroid-sdk</id>
+        <name>CometchatAndroid-sdk</name>
+        <url>https://dl.cloudsmith.io/public/cometchat/cometchat-pro-android-sdk/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>NanorepSearch</id>
+        <name>NanorepSearch</name>
+        <url>https://dl.bintray.com/nanorep/search/</url>
+    </repository>
+    
+    <repository>
+        <id>WSO2 Public</id>
+        <name>WSO2 Public</name>
+        <url>https://maven.wso2.org/nexus/content/repositories/public/</url>
+    </repository>
+    
+    <repository>
+        <id>NanorepDevCore</id>
+        <name>NanorepDevCore</name>
+        <url>https://dl.bintray.com/nanorep/devcore/</url>
+    </repository>
+    
+    <repository>
+        <id>Worldline</id>
+        <name>Worldline</name>
+        <url>https://dl.bintray.com/worldline-spain/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>MS OpenTech</id>
+        <name>MS OpenTech</name>
+        <url>https://dl.bintray.com/msopentech/Maven/</url>
+    </repository>
+    
+    <repository>
+        <id>EsriAndroid</id>
+        <name>EsriAndroid</name>
+        <url>https://dl.bintray.com/esri/android/</url>
+    </repository>
+    
+    <repository>
+        <id>Trifork</id>
+        <name>Trifork</name>
+        <url>https://nexus.trifork.com/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Grails Core</id>
+        <name>Grails Core</name>
+        <url>https://repo.grails.org/grails/core/</url>
+    </repository>
+    
+    <repository>
+        <id>Snowplow</id>
+        <name>Snowplow</name>
+        <url>https://dl.bintray.com/snowplow/snowplow-maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Fidesmo</id>
+        <name>Fidesmo</name>
+        <url>https://dl.bintray.com/fidesmo/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>OpenKM</id>
+        <name>OpenKM</name>
+        <url>https://maven.openkm.com/</url>
+    </repository>
+    
+    <repository>
+        <id>Jumpmind</id>
+        <name>Jumpmind</name>
+        <url>https://maven.jumpmind.com/repo/</url>
+    </repository>
+    
+    <repository>
+        <id>GuardianAndroid</id>
+        <name>GuardianAndroid</name>
+        <url>https://dl.bintray.com/guardian/android/</url>
+    </repository>
+    
+    <repository>
+        <id>Codewaves</id>
+        <name>Codewaves</name>
+        <url>https://dl.bintray.com/codewaves/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>GroundTruth</id>
+        <name>GroundTruth</name>
+        <url>https://dl.bintray.com/groundtruth/pubsvcs/</url>
+    </repository>
+    
+    <repository>
+        <id>NanorepCore</id>
+        <name>NanorepCore</name>
+        <url>https://dl.bintray.com/nanorep/core/</url>
+    </repository>
+    
+    <repository>
+        <id>AlphaCephei</id>
+        <name>AlphaCephei</name>
+        <url>https://alphacephei.com/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Bluecabin</id>
+        <name>Bluecabin</name>
+        <url>https://dl.bintray.com/bluecabin/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Publit</id>
+        <name>Publit</name>
+        <url>https://dl.bintray.com/publitio/publitio-android-sdk/</url>
+    </repository>
+    
+    <repository>
+        <id>Empyr</id>
+        <name>Empyr</name>
+        <url>https://dl.bintray.com/empyrnetwork/empyrnetwork/</url>
+    </repository>
+    
+    <repository>
+        <id>Kotlin EAP</id>
+        <name>Kotlin EAP</name>
+        <url>https://dl.bintray.com/kotlin/kotlin-eap/</url>
+    </repository>
+    
+    <repository>
+        <id>ApolloGraphAndroid</id>
+        <name>ApolloGraphAndroid</name>
+        <url>https://dl.bintray.com/apollographql/android/</url>
+    </repository>
+    
+    <repository>
+        <id>MopubSDK</id>
+        <name>MopubSDK</name>
+        <url>https://dl.bintray.com/mopub/mopub-android-sdk/</url>
+    </repository>
+    
+    <repository>
+        <id>Clevertap</id>
+        <name>Clevertap</name>
+        <url>https://dl.bintray.com/clevertap/Maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Redhat EA</id>
+        <name>Redhat EA</name>
+        <url>https://maven.repository.redhat.com/earlyaccess/all/</url>
+    </repository>
+    
+    <repository>
+        <id>Epam RP</id>
+        <name>Epam RP</name>
+        <url>https://dl.bintray.com/epam/reportportal/</url>
+    </repository>
+    
+    <repository>
+        <id>Kotlin Dev</id>
+        <name>Kotlin Dev</name>
+        <url>https://dl.bintray.com/kotlin/kotlin-dev/</url>
+    </repository>
+    
+    <repository>
+        <id>Gradle Plugins</id>
+        <name>Gradle Plugins</name>
+        <url>https://plugins.gradle.org/m2/</url>
+    </repository>
+    
+    <repository>
+        <id>Atlassian 3rd-P Old</id>
+        <name>Atlassian 3rd-P Old</name>
+        <url>https://maven.atlassian.com/3rdparty/</url>
+    </repository>
+    
+    <repository>
+        <id>Agora</id>
+        <name>Agora</name>
+        <url>https://dl.bintray.com/agora/maven/</url>
+    </repository>
+    
+    <repository>
+        <id>Alfresco 3rdParty</id>
+        <name>Alfresco 3rdParty</name>
+        <url>https://artifacts.alfresco.com/nexus/content/repositories/thirdparty/</url>
+    </repository>
+    
+    <repository>
+        <id>Erudika</id>
+        <name>Erudika</name>
+        <url>https://dl.bintray.com/erudika/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Sofia2</id>
+        <name>Sofia2</name>
+        <url>https://sofia2.org/nexus/content/repositories/releases/</url>
+    </repository>
+    
+    <repository>
+        <id>Bytedance</id>
+        <name>Bytedance</name>
+        <url>https://artifact.bytedance.com/repository/AwemeOpenSDK/</url>
+    </repository>
+       </repositories>
+  </profile>
+</profiles>
+
+<activeProfiles>
+  <activeProfile>libsec</activeProfile>
+</activeProfiles>
+
+</settings>
