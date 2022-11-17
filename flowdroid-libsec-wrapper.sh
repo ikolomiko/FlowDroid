@@ -26,7 +26,7 @@ OUTPUT_PATH="$3" # <output directory path>
 RED='\033[0;31m'
 NC='\033[0m'
 
-PAC_RESOLVER="mvn" # or mvn
+PAC_RESOLVER="ivy" # or mvn
 
 usage() {
   echo "Usage: ./analyze.sh <GROUPID+ARTIFACTID+VERSION> <jar or aar file> <output directory path>"
