@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 SECONDS=0
 JAVA_BIN="/usr/bin/java" # Java version >= 1.8
 JAVAC_BIN="/usr/bin/javac"
@@ -10,9 +12,12 @@ FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd-jar-with-dependencies.jar"
 SOURCES_SINKS="$FLOWDROID_ROOT/SourcesAndSinks.txt"
 ANDROID_JAR="$FLOWDROID_ROOT/android-29.jar"
 FLOWDROID_OPT=" -r -os -mc 99999 -md 99999 -mt 8 -ps"
+POMS_DIR="$FLOWDROID_ROOT/../libsec-scraper/poms"
 
 IVY_BIN="$FLOWDROID_ROOT/ivy-2.5.0.jar"
 IVY_SETTINGS="$FLOWDROID_ROOT/ivysettings.xml"
+MVN_BIN="/usr/bin/mvn"
+MVN_SETTINGS="$FLOWDROID_ROOT/mavensettings.xml"
 
 LIBRARY_ID="$1" # GROUP_ID+ARTIFACT_ID+VERSION
 INPUT_FILE="$2" # <file>.aar || <file>.jar
@@ -20,6 +25,8 @@ OUTPUT_PATH="$3" # <output directory path>
 
 RED='\033[0;31m'
 NC='\033[0m'
+
+PAC_RESOLVER="mvn" # or mvn
 
 usage() {
   echo "Usage: ./analyze.sh <GROUPID+ARTIFACTID+VERSION> <jar or aar file> <output directory path>"
@@ -74,22 +81,45 @@ fi
 # Extract aar/jar file
 TEMP=$(mktemp -d)
 if [ $EXT = "aar" ]; then
-  rm -f /tmp/classes.jar
-  unzip $INPUT_FILE classes.jar -d /tmp
-  unzip /tmp/classes.jar -d $TEMP
+  TEMP2=$(mktemp -d)
+  unzip $INPUT_FILE classes.jar -d $TEMP2
+  unzip $TEMP2/classes.jar -d $TEMP
+  rm -rf $TEMP2
 else
   unzip $INPUT_FILE -d $TEMP
 fi
 
-
 DEPS_DIR=$(mktemp -d)
-# Get all dependencies (except android.jar)
-get_dependencies() {
-  rm -rf $FLOWDROID_ROOT/cachedir
-  $JAVA_BIN -jar $IVY_BIN -dependency $GROUPID $ARTIFACTID $VERSION -retrieve "$DEPS_DIR/[organization]+[artifact]+[revision](+[classifier]).[ext]" -settings $IVY_SETTINGS -cache cachedir -refresh
-  rm -f $DEPS_DIR/$BASE_NAME
+pomfile=""
+# Create pom file
+create_pom() {
+  original_pom="$POMS_DIR/$GROUPID/$ARTIFACTID/$VERSION/pom.xml"
+  if [[ ! -f $original_pom ]]; then
+    return 0
+  fi
+
+  mkdir -p $DEPS_DIR/pom
+  pomfile=$DEPS_DIR/pom/pom.xml
+  cp $original_pom $pomfile
+  python3 $FLOWDROID_ROOT/inject_plugin.py "$pomfile"
+
+  echo $(realpath $pomfile)
 }
-get_dependencies 2>&1 | tee $OUTPUT_PATH/ivy-log.txt 
+[[ $PAC_RESOLVER == "mvn" ]] && pomfile="$(create_pom)"
+
+# Get all dependencies (except android.jar)
+if [[ $PAC_RESOLVER == "ivy" ]]; then
+  get_dependencies() {
+    $JAVA_BIN -jar $IVY_BIN -dependency $GROUPID $ARTIFACTID $VERSION -retrieve "$DEPS_DIR/[organization]+[artifact]+[revision](+[classifier]).[ext]" -settings $IVY_SETTINGS -cache cachedir
+    rm -f $DEPS_DIR/$BASE_NAME
+  }
+  get_dependencies 2>&1 | tee $OUTPUT_PATH/ivy-log.txt
+elif [[ $PAC_RESOLVER == "mvn" ]]; then
+  get_dependencies() {
+    JAVA_HOME="" mvn dependency:copy-dependencies -f $pomfile -DoutputDirectory=$DEPS_DIR -s $MVN_SETTINGS -gs $MVN_SETTINGS -fae
+  }
+  [ ! -z $pomfile ] && get_dependencies 2>&1 | tee $OUTPUT_PATH/mvn-log.txt || echo "pom.xml was not found"
+fi
 
 # Unpack aar dependencies (if there are any)
 AAR_DEPS=$(find $DEPS_DIR -name "*.aar")
