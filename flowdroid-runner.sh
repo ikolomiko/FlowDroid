@@ -21,12 +21,10 @@ start_analysis() {
  ./flowdroid-libsec-wrapper.sh $1 $2 $3
 }
 
-ITER=0
-folders="$(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d)"
-TOTAL=$(wc -l <<< "$folders")
-for subfolder in $folders; do
-    ((++ITER))
-    echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
+inner_for_loop() {
+    #$1=subfolder
+    subfolder=$1
+
     base_id=$(basename $subfolder)
     for file in $(find $subfolder -mindepth 1 -maxdepth 1 -type f -name "*.aar" -or -name "*.jar"); do
         filename=$(basename $file)
@@ -37,6 +35,18 @@ for subfolder in $folders; do
 
         start_analysis $library_id $input_file $(realpath $OUTPUT_ROOT/$base_id/$version)
     done
+}
+#export -f inner_for_loop start_analysis
+
+# ITER=0
+folders="$(find $LIBS_ROOT -mindepth 1 -maxdepth 1 -type d)"
+TOTAL=$(wc -l <<< "$folders")
+for subfolder in $folders; do
+    ((++ITER))
+    echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
+    inner_for_loop $subfolder
 done
+
+#parallel --bar inner_for_loop ::: $folders ::: $OUTPUT_ROOT
 
 echo -e "${GREEN}Took $SECONDS seconds to finish them all${NC}"
