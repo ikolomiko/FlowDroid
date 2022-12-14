@@ -7,3 +7,4 @@ soot-infoflow-summaries/target/
 *.iml
 target/
 */target
+deps/
