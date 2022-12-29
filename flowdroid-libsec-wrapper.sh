@@ -144,24 +144,6 @@ for lib in $DEPS_DIR/*; do
     [ -f $lib ] && CLASSPATH="$CLASSPATH:$lib"
 done
 
-# Find java and kotlin source files
-JAVA_FILES=$(find $TEMP -name '*.java')
-KOTLIN_FILES=$(find $TEMP -name '*.kt')
-
-# Compile source files to bytecode (if there are any)
-compile() {
-    cd $TEMP
-    if [[ ! -z $JAVA_FILES ]]; then
-        echo $RED Compiling java source files for $LIBRARY_ID+$VERSION $NC
-        javac -proc:none -cp $CLASSPATH $JAVA_FILES
-    fi
-    if [[ ! -z $KOTLIN_FILES ]]; then
-        echo $RED Compiling kotlin source files for $LIBRARY_ID+$VERSION $NC
-        kotlinc -classpath $CLASSPATH $KOTLIN_FILES
-    fi
-}
-[[ ! -z $JAVA_FILES && ! -z $KOTLIN_FILES ]] && compile 2>&1 | tee $OUTPUT_PATH/compile-log.txt
-
 # Run FlowDroid (what a useful comment)
 run_flowdroid $TEMP $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
 
