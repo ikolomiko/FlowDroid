@@ -58,9 +58,6 @@ if [ ! -f $INPUT_FILE ]; then
     error "File $INPUT_FILE does not exist"
 fi
 
-DEPS_DIR="$DEPS_ROOT/$GROUPID+$ARTIFACTID/$VERSION"
-mkdir -p $DEPS_DIR
-
 mkdir -p $OUTPUT_PATH
 OUTPUT_PATH=$(realpath $OUTPUT_PATH)
 
@@ -79,16 +76,20 @@ if [[ -z $GROUPID || -z $ARTIFACTID || -z $VERSION ]]; then
 Example input file name format: com.android.google.material+material+1.6.1 path/to/1.6.1.aar"
 fi
 
+DEPS_DIR="$DEPS_ROOT/$GROUPID+$ARTIFACTID/$VERSION"
+mkdir -p $DEPS_DIR
+
 # Extract aar/jar file
 UNZIPPED=$DEPS_DIR/unzipped
 mkdir -p $UNZIPPED
 if [ $EXT = "aar" ]; then
     TEMP=$UNZIPPED/temp
-    unzip $INPUT_FILE classes.jar -d $TEMP
-    unzip $TEMP/classes.jar -d $UNZIPPED
+    mkdir -p $TEMP
+    unzip -o $INPUT_FILE classes.jar -d $TEMP
+    unzip -o $TEMP/classes.jar -d $UNZIPPED
     rm -rf $TEMP
 else
-    unzip $INPUT_FILE -d $UNZIPPED
+    unzip -o $INPUT_FILE -d $UNZIPPED
 fi
 
 # Dependency resolving
@@ -135,7 +136,7 @@ while IFS= read -r line; do
     mkdir -p $tempout
     bname=$(basename $1)
     filename="${bname%.*}"
-    unzip $line classes.jar -d $tempout
+    unzip -o $line classes.jar -d $tempout
     mv $tempout/classes.jar $DEPS_DIR/$filename.jar
     rm -f $line
     rm -rf tempout
