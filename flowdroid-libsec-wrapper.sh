@@ -58,6 +58,9 @@ if [ ! -f $INPUT_FILE ]; then
     error "File $INPUT_FILE does not exist"
 fi
 
+DEPS_DIR="$DEPS_ROOT/$GROUPID+$ARTIFACTID/$VERSION"
+mkdir -p $DEPS_DIR
+
 mkdir -p $OUTPUT_PATH
 OUTPUT_PATH=$(realpath $OUTPUT_PATH)
 
@@ -77,19 +80,18 @@ Example input file name format: com.android.google.material+material+1.6.1 path/
 fi
 
 # Extract aar/jar file
-TEMP=$(mktemp -d)
+UNZIPPED=$DEPS_DIR/unzipped
+mkdir -p $UNZIPPED
 if [ $EXT = "aar" ]; then
-    TEMP2=$(mktemp -d)
-    unzip $INPUT_FILE classes.jar -d $TEMP2
-    unzip $TEMP2/classes.jar -d $TEMP
-    rm -rf $TEMP2
+    TEMP=$UNZIPPED/temp
+    unzip $INPUT_FILE classes.jar -d $TEMP
+    unzip $TEMP/classes.jar -d $UNZIPPED
+    rm -rf $TEMP
 else
-    unzip $INPUT_FILE -d $TEMP
+    unzip $INPUT_FILE -d $UNZIPPED
 fi
 
 # Dependency resolving
-DEPS_DIR="$DEPS_ROOT/$GROUPID+$ARTIFACTID/$VERSION"
-mkdir -p $DEPS_DIR
 if [[ -z $RMODE || $RMODE == "all" || $RMODE == "deps" ]]; then
     pomfile=""
     # Create pom file if PAC_RESOLVER is set to "mvn"
@@ -129,7 +131,8 @@ fi
 AAR_DEPS=$(find $DEPS_DIR -name "*.aar")
 while IFS= read -r line; do
     [ -z $line ] && break
-    tempout=$(mktemp -d)
+    tempout=$DEPS_DIR/aar-out
+    mkdir -p $tempout
     bname=$(basename $1)
     filename="${bname%.*}"
     unzip $line classes.jar -d $tempout
@@ -139,16 +142,14 @@ while IFS= read -r line; do
 done <<<"$AAR_DEPS"
 
 # Add dependencies to the classpath
-CLASSPATH="$ANDROID_JAR:$TEMP"
+CLASSPATH="$ANDROID_JAR:$UNZIPPED"
 for lib in $DEPS_DIR/*; do
     [ -f $lib ] && CLASSPATH="$CLASSPATH:$lib"
 done
 
 # Run FlowDroid (what a useful comment)
-run_flowdroid $TEMP $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
+run_flowdroid $UNZIPPED $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
 
 # Clean up the temporary directory and exit
-rm -rf $TEMP
-rm -rf $FLOWDROID_ROOT/cachedir
 echo "Took $SECONDS seconds"
 exit 0
