@@ -20,8 +20,8 @@ analyzed_versions=$(find "$1" -name "flowdroid-results.xml")
 analyzed_libs=$(num_of_libs "$analyzed_versions")
 analyzed_versions=$(echo "$analyzed_versions" | wc -l)
 
-total_versions=$(find lastout -mindepth 2 -maxdepth 2 | wc -l)
-total_libs=$(find lastout -mindepth 1 -maxdepth 1 | wc -l)
+total_versions=$(find "$1" -mindepth 2 -maxdepth 2 | wc -l)
+total_libs=$(find "$1" -mindepth 1 -maxdepth 1 | wc -l)
 
 echo "Analyzed $analyzed_versions/$total_versions libraries with versions"
 echo "$(($total_versions - $analyzed_versions)) of them could not be analyzed"
