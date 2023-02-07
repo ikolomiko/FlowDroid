@@ -7,14 +7,19 @@ usage() {
 }
 
 num_of_libs() {
-  echo "$1" | cut -d"/" -f2 | sort -u | wc -l
+  echo -e "$1" | cut -d"/" -f2 | sort -u | wc -l
 }
 
 [[ -d "$1" ]] || usage
 
-leaks_versions=$(grep 'Found [^0].* leaks' -l "$1"/*/*/flowdroid-log.txt)
+leaks_versions=""
+for file in "$1"/*/*/flowdroid-log.txt ; do
+  if [[ ! -z $(grep 'Found [^0].* leaks' $file) ]]; then
+    [[ -z $leaks_versions ]] && leaks_versions=$file || leaks_versions="$leaks_versions\n$file"
+  fi
+done
 leaks_libs=$(num_of_libs "$leaks_versions")
-leaks_versions=$(echo "$leaks_versions" | wc -l)
+leaks_versions=$(echo -e "$leaks_versions" | wc -l)
 
 analyzed_versions=$(find "$1" -name "flowdroid-results.xml")
 analyzed_libs=$(num_of_libs "$analyzed_versions")
