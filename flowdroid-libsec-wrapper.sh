@@ -10,8 +10,9 @@ KOTLINC_BIN="/usr/bin/kotlinc"
 FLOWDROID_ROOT="$(dirname $(realpath "$0"))"
 FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd-jar-with-dependencies.jar"
 SOURCES_SINKS="$FLOWDROID_ROOT/SourcesAndSinks.txt"
+SOURCES_SINKS_CONTENT="$FLOWDROID_ROOT/SourcesAndSinks_ContentProvider.txt"
 ANDROID_JAR="$FLOWDROID_ROOT/android-29.jar"
-FLOWDROID_OPT=" -r -os -mc 99999 -md 99999 -mt 8 -ps"
+FLOWDROID_OPT=" -r -mc 99999 -md 99999 -mt 8 -ps"
 POMS_DIR="$FLOWDROID_ROOT/../libsec-scraper/poms"
 DEPS_ROOT="$FLOWDROID_ROOT/deps"
 
@@ -23,7 +24,7 @@ MVN_SETTINGS="$FLOWDROID_ROOT/mavensettings.xml"
 LIBRARY_ID="$1"  # GROUP_ID+ARTIFACT_ID+VERSION
 INPUT_FILE="$2"  # <file>.aar || <file>.jar
 OUTPUT_PATH="$3" # <output directory path>
-RMODE="$4"       # [all,deps,flowdroid] default=all
+RMODE="$4"       # [deps,flowdroid,normal,content,deps-content] default=normal
 
 RED='\033[0;31m'
 NC='\033[0m'
@@ -31,7 +32,13 @@ NC='\033[0m'
 PAC_RESOLVER="ivy" # or mvn
 
 usage() {
-    echo "Usage: ./analyze.sh <GROUPID+ARTIFACTID+VERSION> <jar or aar file> <output directory path>"
+    echo "Usage: $0 <GROUPID+ARTIFACTID+VERSION> <jar or aar file> <output directory path> [RMODE]"
+    echo "RMODE values:"
+    echo "  * normal:       The default value for RMODE. Installs dependencies for the library and runs Flowdroid in leak detection mode."
+    echo "    deps:         Installs dependencies for the library and exits."
+    echo "    flowdroid:    Runs Flowdroid in leak detection mode without installing dependencies."
+    echo "    content:      Runs Flowdroid in content URI detection mode without installing dependencies."
+    echo "    deps-content: Installs dependencies for the library and runs Flowdroid in content URI detection mode."
     exit 1
 }
 
@@ -45,7 +52,8 @@ run_flowdroid() {
     # $1 = path to the unzipped jar file
     # $2 = group id
     # $3 = classpath
-    $JAVA_BIN -jar $FLOWDROID_BIN -a $1 -s $SOURCES_SINKS -o $OUTPUT_PATH/flowdroid-results.xml -p $ANDROID_JAR -gi $2 -ac $3 $FLOWDROID_OPT
+    # $4 = output file prefix (if any)
+    $JAVA_BIN -jar $FLOWDROID_BIN -a $1 -s $SOURCES_SINKS -o $OUTPUT_PATH/${4}flowdroid-results.xml -p $ANDROID_JAR -gi $2 -ac $3 $FLOWDROID_OPT
 }
 
 # Check arguments
@@ -93,7 +101,7 @@ else
 fi
 
 # Dependency resolving
-if [[ -z $RMODE || $RMODE == "all" || $RMODE == "deps" ]]; then
+if [[ -z $RMODE || $RMODE == "normal" || $RMODE == "deps" || $RMODE == "deps-content" ]]; then
     pomfile=""
     # Create pom file if PAC_RESOLVER is set to "mvn"
     create_pom() {
@@ -148,8 +156,18 @@ for lib in $DEPS_DIR/*; do
     [ -f $lib ] && CLASSPATH="$CLASSPATH:$lib"
 done
 
-# Run FlowDroid (what a useful comment)
-run_flowdroid $UNZIPPED $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
+# Run FlowDroid 
+if [[ $RMODE == "content" || $RMODE == "deps-content" ]]; then # content URI detection mode
+    # Switch the sources-sinks file and use the proper output files
+    SOURCES_SINKS=$SOURCES_SINKS_CONTENT
+    output_prefix="content-uri-"
+    run_flowdroid $UNZIPPED $GROUPID $CLASSPATH $output_prefix 2>&1 | tee $OUTPUT_PATH/${output_prefix}flowdroid-log.txt
+    perl -ne 'print "$1\n" if /$Found content URI "(.*)"/' $OUTPUT_PATH/${output_prefix}flowdroid-log.txt | sort -u > $OUTPUT_PATH/content-uris.txt
+else # leak detection mode, [-z || flowdroid || normal]
+    # Add the one-source-at-a-time option
+    FLOWDROID_OPT="$FLOWDROID_OPT -os"
+    run_flowdroid $UNZIPPED $GROUPID $CLASSPATH 2>&1 | tee $OUTPUT_PATH/flowdroid-log.txt
+fi
 
 # Clean up the temporary directory and exit
 echo "Took $SECONDS seconds"

@@ -7,8 +7,13 @@ NC='\033[0m'
 OUTPUT_ROOT="$1"
 RMODE="$2"
 if [ -z $1 ]; then
-    echo "usage: bash flowdroid-runner.sh <output dir> [MODE]"
-    echo "MODE: [all,deps,flowdroid], default=all"
+    echo "usage: $0 <output dir> [RMODE]"
+    echo "RMODE values:"
+    echo "  * normal:       The default value for RMODE. Installs dependencies for the libraries and runs Flowdroid in leak detection mode."
+    echo "    deps:         Installs dependencies for the libraries and exits."
+    echo "    flowdroid:    Runs Flowdroid in leak detection mode without installing dependencies."
+    echo "    content:      Runs Flowdroid in content URI detection mode without installing dependencies."
+    echo "    deps-content: Installs dependencies for the libraries and runs Flowdroid in content URI detection mode."
     exit 1
 fi
 
@@ -19,7 +24,7 @@ start_analysis() {
     #LIBRARY_ID="$1" # GROUP_ID+ARTIFACT_ID+VERSION
     #INPUT_FILE="$2" # <file>.aar || <file>.jar
     #OUTPUT_PATH="$3" # <output directory path>
-    #RMODE="$4" # [all,deps,flowdroid], default=all
+    #RMODE="$4" # [normal,deps,flowdroid,content,deps-content], default=normal
 
     ./flowdroid-libsec-wrapper.sh $1 $2 $3 $4
 }
