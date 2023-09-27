@@ -11,6 +11,7 @@ package soot.jimple.infoflow;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import soot.PointsToAnalysis;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.infoflow.InfoflowConfiguration.AccessPathConfiguration;
 import soot.jimple.infoflow.InfoflowConfiguration.CallgraphAlgorithm;
@@ -107,6 +109,34 @@ import soot.options.Options;
  *
  */
 public class Infoflow extends AbstractInfoflow {
+
+	private final String URI_PARSE_SIGNATURE = "<android.net.Uri: android.net.Uri parse(java.lang.String)>";
+
+	private final Set<String> CONTENT_URIS = new HashSet<String>(Arrays.asList(new String[]{
+		"content://browser/bookmarks",
+		"content://calendar/events",
+		"content://com.android.calendar/calendars",
+		"content://com.android.calendar/events",
+		"content://com.android.chrome.browser/bookmarks",
+		"content://com.android.contacts/contacts",
+		"content://com.android.contacts/data/emails/lookup",
+		"content://com.android.contacts/phone_lookup",
+		"content://com.chrome.beta.browser/bookmarks",
+		"content://contacts/presence",
+		"content://downloads/public_downloads",
+		"content://media/external/fs_id",
+		"content://mms-sms/threadID",
+		"content://mms/",
+		"content://mms/part",
+		"content://sim/adn",
+		"content://sms",
+		"content://sms/",
+		"content://sms/inbox",
+		"content://sms/sent",
+		"content://sms/sim",
+		"content://telephony/carriers",
+		"content://telephony/carriers/preferapn"
+	}));
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -1240,6 +1270,21 @@ public class Infoflow extends AbstractInfoflow {
 					forwardProblem.addInitialSeeds(u, Collections.singleton(forwardProblem.zeroValue()));
 					if (getConfig().getLogSourcesAndSinks())
 						collectedSources.add(s);
+
+					try {
+						StaticInvokeExpr invokeExpr = (StaticInvokeExpr) s.getInvokeExpr();
+						SootMethod invokedMethod = invokeExpr.getMethod();
+						if (invokedMethod.getSignature().equals(URI_PARSE_SIGNATURE)) {
+							String argValue = invokeExpr.getArg(0).toString().replace("\"", "");
+							if (CONTENT_URIS.contains(argValue)){
+								System.out.println("Found content URI \"" + argValue + "\" at method " + m.getSignature());
+							}
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 					logger.debug("Source found: {} in {}", u, m.getSignature());
 				}
 				if (sourcesSinks.getSinkInfo(s, manager, null) != null) {
