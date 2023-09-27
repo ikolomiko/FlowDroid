@@ -135,6 +135,19 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 					searchAndBuildMethod(AndroidEntryPointConstants.CONTENTPROVIDER_ONCREATE, currentClass, localVal);
 					body.getUnits().add(thenStmt);
 					hasContentProviders = true;
+				} 
+				else {
+					// Create constructor and call every method for all classes
+					Local localVal = generateClassConstructor(currentClass);
+					if (localVal == null)
+						continue;
+					localVarsForClasses.put(currentClass, localVal);
+
+					for (SootMethod sm : currentClass.getMethods()) {
+						if (sm != null)
+							createPlainMethodCall(localVal, sm);
+					}
+					
 				}
 			}
 			// Jump back to the beginning of this section to overapproximate the
@@ -271,16 +284,7 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 				componentCreator = new ContentProviderEntryPointCreator(currentClass, applicationClass, this.manifest);
 				break;
 			default:
-				Map<SootClass, SootMethod> curActivityToFragmentMethod2 = new HashMap<>();
-				if (fragmentClasses != null) {
-					Set<SootClass> fragments = fragmentClasses.get(currentClass);
-					if (fragments != null && !fragments.isEmpty()) {
-						for (SootClass fragment : fragments)
-							curActivityToFragmentMethod2.put(fragment, fragmentToMainMethod.get(fragment));
-					}
-				}
-				componentCreator = new ActivityEntryPointCreator(currentClass, applicationClass,
-						activityLifecycleCallbacks, callbackClassToField, curActivityToFragmentMethod2, this.manifest);
+				componentCreator = null;
 				break;
 			}
 
