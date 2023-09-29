@@ -58,19 +58,19 @@ TOTAL=$(wc -l <<<"$folders")
 echo "Getting dependencies" >> status.txt
 
 # Get dependencies in non-parallelized fashion
-if [[ $2 != "flowdroid" ]]; then
+if [[ $2 == "normal" || $2 == "deps" || $2 == "deps-content" ]]; then
     for subfolder in $folders; do
         ((++ITER))
         echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
-        inner_for_loop $subfolder $OUTPUT_ROOT "deps"
+        inner_for_loop $subfolder $OUTPUT_ROOT "$2"
     done
 fi
 
 echo "Running flowdroid" >> status.txt
 
 # Run flowdroid in parallel
-if [[ $2 != "deps" ]]; then
-    parallel -j 50 --bar inner_for_loop ::: $folders ::: $OUTPUT_ROOT ::: "flowdroid"
+if [[ $2 == "normal" || $2 == "flowdroid" || $2 == "content" || $2 == "deps-content" ]]; then
+    parallel -j 50 --bar inner_for_loop ::: $folders ::: $OUTPUT_ROOT ::: "$2"
 fi
 
 echo -e "${GREEN}Took $SECONDS seconds to finish them all${NC}"
