@@ -62,7 +62,7 @@ if [[ $2 == "normal" || $2 == "deps" || $2 == "deps-content" ]]; then
     for subfolder in $folders; do
         ((++ITER))
         echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
-        inner_for_loop $subfolder $OUTPUT_ROOT "$2"
+        inner_for_loop $subfolder $OUTPUT_ROOT "deps"
     done
 fi
 
