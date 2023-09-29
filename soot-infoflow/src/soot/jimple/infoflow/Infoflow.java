@@ -112,7 +112,7 @@ public class Infoflow extends AbstractInfoflow {
 
 	private final String URI_PARSE_SIGNATURE = "<android.net.Uri: android.net.Uri parse(java.lang.String)>";
 
-	private final Set<String> CONTENT_URIS = new HashSet<String>(Arrays.asList(new String[]{
+	private final String[] CONTENT_URIS = {
 		"content://browser/bookmarks",
 		"content://calendar/events",
 		"content://com.android.calendar/calendars",
@@ -124,19 +124,15 @@ public class Infoflow extends AbstractInfoflow {
 		"content://com.chrome.beta.browser/bookmarks",
 		"content://contacts/presence",
 		"content://downloads/public_downloads",
-		"content://media/external/fs_id",
-		"content://mms-sms/threadID",
+		"content://media/external/",
+		"content://mms-sms/",
 		"content://mms/",
-		"content://mms/part",
 		"content://sim/adn",
-		"content://sms",
 		"content://sms/",
-		"content://sms/inbox",
-		"content://sms/sent",
-		"content://sms/sim",
 		"content://telephony/carriers",
-		"content://telephony/carriers/preferapn"
-	}));
+		"content://org.mozilla.firefox.db.browser/bookmarks",
+		"content://com.android.chrome.browser/bookmarks"
+	};
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -1276,8 +1272,10 @@ public class Infoflow extends AbstractInfoflow {
 						SootMethod invokedMethod = invokeExpr.getMethod();
 						if (invokedMethod.getSignature().equals(URI_PARSE_SIGNATURE)) {
 							String argValue = invokeExpr.getArg(0).toString().replace("\"", "");
-							if (CONTENT_URIS.contains(argValue)){
-								System.out.println("Found content URI \"" + argValue + "\" at method " + m.getSignature());
+							for (String uri : CONTENT_URIS) {
+								if (uri.startsWith(argValue)){
+									System.out.println("Found content URI \"" + uri + "\" at method " + m.getSignature());
+								}
 							}
 						}
 
