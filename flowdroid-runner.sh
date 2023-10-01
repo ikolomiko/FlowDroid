@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 OUTPUT_ROOT="$1"
 RMODE="$2"
-if [ -z $1 ]; then
+if [[ -z $1 || ! ( $RMODE =~ ^(""|normal|deps|flowdroid|content|deps-content)$ ) ]]; then
     echo "usage: $0 <output dir> [RMODE]"
     echo "RMODE values:"
     echo "  * normal:       The default value for RMODE. Installs dependencies for the libraries and runs Flowdroid in leak detection mode."
@@ -58,19 +58,31 @@ TOTAL=$(wc -l <<<"$folders")
 echo "Getting dependencies" >> status.txt
 
 # Get dependencies in non-parallelized fashion
-if [[ $2 == "normal" || $2 == "deps" || $2 == "deps-content" ]]; then
+if [[ "$RMODE" =~ ^(""|normal|deps|deps-content)$ ]]; then
     for subfolder in $folders; do
         ((++ITER))
-        echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}"
+        echo -e "${GREEN}Folder $ITER/$TOTAL ${NC}" | tee -a status.txt
         inner_for_loop $subfolder $OUTPUT_ROOT "deps"
     done
 fi
 
 echo "Running flowdroid" >> status.txt
 
+case $RMODE in
+
+    "" | normal | flowdroid)
+        RMODE2="flowdroid"
+        ;;
+
+    content | deps-content)
+        RMODE2="content"
+        ;;
+
+esac
+
 # Run flowdroid in parallel
-if [[ $2 == "normal" || $2 == "flowdroid" || $2 == "content" || $2 == "deps-content" ]]; then
-    parallel -j 50 --bar inner_for_loop ::: $folders ::: $OUTPUT_ROOT ::: "$2"
+if [[ ! -z $RMODE2 ]]; then
+    parallel -j 50 --bar inner_for_loop ::: $folders ::: $OUTPUT_ROOT ::: "$RMODE2"
 fi
 
 echo -e "${GREEN}Took $SECONDS seconds to finish them all${NC}"
