@@ -1272,8 +1272,11 @@ public class Infoflow extends AbstractInfoflow {
 						SootMethod invokedMethod = invokeExpr.getMethod();
 						if (invokedMethod.getSignature().equals(URI_PARSE_SIGNATURE)) {
 							String argValue = invokeExpr.getArg(0).toString().replace("\"", "");
+							if (!argValue.startsWith("content://")) {
+								continue;
+							}
 							for (String uri : CONTENT_URIS) {
-								if (uri.startsWith(argValue)){
+								if (argValue.startsWith(uri)){
 									System.out.println("Found content URI \"" + uri + "\" at method " + m.getSignature());
 								}
 							}
