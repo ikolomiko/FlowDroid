@@ -766,7 +766,7 @@ public class SetupApplication implements ITaintWrapperDataFlowAnalysis {
 					}
 				}
 
-				if (numPrevEdges < Scene.v().getCallGraph().size())
+				if (numPrevEdges < Scene.v().getCallGraph().size() && numPrevEdges != 0)
 					hasChanged = true;
 
 				// Collect the results of the soot-based phases

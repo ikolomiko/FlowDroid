@@ -8,11 +8,11 @@ JAVAC_BIN="/usr/bin/javac"
 KOTLINC_BIN="/usr/bin/kotlinc"
 
 FLOWDROID_ROOT="$(dirname $(realpath "$0"))"
-FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd-jar-with-dependencies.jar"
+FLOWDROID_BIN="$FLOWDROID_ROOT/soot-infoflow-cmd/target/soot-infoflow-cmd-jar-with-dependencies.jar"
 SOURCES_SINKS="$FLOWDROID_ROOT/SourcesAndSinks.txt"
 SOURCES_SINKS_CONTENT="$FLOWDROID_ROOT/SourcesAndSinks_ContentProvider.txt"
 ANDROID_JAR="$FLOWDROID_ROOT/android-29.jar"
-FLOWDROID_OPT=" -r -mc 99999 -md 99999 -mt 8 -ps"
+FLOWDROID_OPT=" -r -mc 3 -md 3 -mt 8 -ps"
 POMS_DIR="$FLOWDROID_ROOT/../libsec-scraper/poms"
 DEPS_ROOT="$FLOWDROID_ROOT/deps"
 

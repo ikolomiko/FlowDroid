@@ -143,11 +143,29 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 						continue;
 					localVarsForClasses.put(currentClass, localVal);
 
-					for (SootMethod sm : currentClass.getMethods()) {
-						if (sm != null)
-							createPlainMethodCall(localVal, sm);
+					for (SootMethod method : currentClass.getMethods()) {
+						if (method == null) {
+							//logger.warn("Could not find Android entry point method: {}", subsignature);
+							continue;
+						}
+				
+						// If the method is in one of the predefined Android classes, it cannot
+						// contain custom code, so we do not need to call it
+						if (AndroidEntryPointConstants.isLifecycleClass(method.getDeclaringClass().getName()))
+							continue;
+				
+						// If this method is part of the Android framework, we don't need to
+						// call it
+						if (SystemClassHandler.v().isClassInSystemPackage(method.getDeclaringClass().getName()))
+							continue;
+				
+						assert method.isStatic() || localVal != null : "Class local was null for non-static method "
+								+ method.getSignature();
+				
+						// write Method
+						buildMethodCall(method, localVal, Collections.<SootClass>emptySet());
 					}
-					
+					System.out.println("built " + currentClass.getName());
 				}
 			}
 			// Jump back to the beginning of this section to overapproximate the
