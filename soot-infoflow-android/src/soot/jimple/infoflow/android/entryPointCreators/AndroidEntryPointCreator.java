@@ -148,6 +148,9 @@ public class AndroidEntryPointCreator extends AbstractAndroidEntryPointCreator i
 							//logger.warn("Could not find Android entry point method: {}", subsignature);
 							continue;
 						}
+
+						if (!method.isConcrete())
+							continue;
 				
 						// If the method is in one of the predefined Android classes, it cannot
 						// contain custom code, so we do not need to call it
