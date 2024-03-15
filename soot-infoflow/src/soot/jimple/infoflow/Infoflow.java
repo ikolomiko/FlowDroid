@@ -113,6 +113,7 @@ public class Infoflow extends AbstractInfoflow {
 	private final String URI_PARSE_SIGNATURE = "<android.net.Uri: android.net.Uri parse(java.lang.String)>";
 
 	private final String[] CONTENT_URIS = {
+		/*
 		"content://browser/bookmarks",
 		"content://calendar/events",
 		"content://com.android.calendar/calendars",
@@ -132,6 +133,8 @@ public class Infoflow extends AbstractInfoflow {
 		"content://telephony/carriers",
 		"content://org.mozilla.firefox.db.browser/bookmarks",
 		"content://com.android.chrome.browser/bookmarks"
+		*/
+		"content://com.android.calendar/"
 	};
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
